@@ -109,6 +109,10 @@
     "profile": {
       "pt": "Perfil",
       "en": "Profile"
+    },
+    "progression": {
+      "pt": "Progressão",
+      "en": "Progress"
     }
   },
   "library": {
@@ -573,6 +577,10 @@
     "resumeSavedWord": {
       "pt": "Continuar da palavra salva",
       "en": "Continue from saved word"
+    },
+    "localActivity": {
+      "pt": "Entre em uma conta para sincronizar sua atividade.",
+      "en": "Sign in to sync your activity."
     }
   },
   "auth": {
@@ -1195,6 +1203,94 @@
     "reset": {
       "pt": "Restaurar padrão",
       "en": "Restore defaults"
+    }
+  },
+  "progression": {
+    "week": {
+      "pt": "Semana",
+      "en": "Week"
+    },
+    "month": {
+      "pt": "Mês",
+      "en": "Month"
+    },
+    "previous": {
+      "pt": "Período anterior",
+      "en": "Previous period"
+    },
+    "next": {
+      "pt": "Próximo período",
+      "en": "Next period"
+    },
+    "currentWeek": {
+      "pt": "Semana atual",
+      "en": "This week"
+    },
+    "currentMonth": {
+      "pt": "Mês atual",
+      "en": "This month"
+    },
+    "previousPeriod": {
+      "pt": "Período anterior",
+      "en": "Previous period"
+    },
+    "total": {
+      "pt": "{count} palavras únicas",
+      "en": "{count} unique words"
+    },
+    "average": {
+      "pt": "Média diária: {average}",
+      "en": "Daily average: {average}"
+    },
+    "futureDay": {
+      "pt": "{date}: dia futuro",
+      "en": "{date}: future day"
+    },
+    "day": {
+      "pt": "{date}: {count} palavras",
+      "en": "{date}: {count} words"
+    },
+    "definition": {
+      "pt": "Palavras apresentadas pela primeira vez. Releituras não aumentam o total. A média inclui os dias sem leitura até hoje.",
+      "en": "Words presented for the first time. Rereading does not increase the total. The average includes days without reading through today."
+    },
+    "undated": {
+      "pt": "{count} palavras anteriores sem data conhecida, fora do gráfico.",
+      "en": "{count} earlier words without a known date, excluded from the chart."
+    },
+    "documents": {
+      "pt": "Progresso dos PDFs",
+      "en": "PDF progress"
+    },
+    "empty": {
+      "pt": "Importe um PDF para acompanhar sua leitura.",
+      "en": "Import a PDF to track your reading."
+    },
+    "documentProgress": {
+      "pt": "{read} de {total} palavras · {percent}%",
+      "en": "{read} of {total} words · {percent}%"
+    }
+  },
+  "support": {
+    "help": {
+      "pt": "Ajuda e feedback",
+      "en": "Help and feedback"
+    },
+    "diagnostics": {
+      "pt": "Revisar diagnóstico técnico",
+      "en": "Review technical diagnostics"
+    },
+    "send": {
+      "pt": "Enviar por e-mail",
+      "en": "Send by email"
+    },
+    "describe": {
+      "pt": "Descreva o problema e os passos para reproduzir:",
+      "en": "Describe the problem and steps to reproduce:"
+    },
+    "mailUnavailable": {
+      "pt": "Não foi possível abrir seu aplicativo de e-mail. Contate pdfastreader@box.mediaserve.ca.",
+      "en": "Unable to open your email app. Contact pdfastreader@box.mediaserve.ca."
     }
   }
 }

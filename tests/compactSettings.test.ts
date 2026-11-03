@@ -26,6 +26,14 @@ test("settings keep language and colors compact, update the preview, and preserv
       {
         name: "native",
         setup(b) {
+          b.onResolve({ filter: /\/Support$/ }, () => ({
+            path: "support",
+            namespace: "support",
+          }));
+          b.onLoad({ filter: /.*/, namespace: "support" }, () => ({
+            contents: "export const Support=()=>null;",
+            loader: "js",
+          }));
           b.onResolve(
             {
               filter:

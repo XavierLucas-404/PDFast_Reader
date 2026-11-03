@@ -25,6 +25,7 @@ test("account snapshots isolate libraries, preserve legacy owners, survive missi
     failMarker = false;
   const fs = {
     documentDirectory: "local/",
+    readDirectoryAsync:async()=>[...files.keys()].filter(n=>n.startsWith("local/")).map(n=>n.slice(6)),
     deleteAsync: async (p: string) => {
       for (const name of files.keys())
         if (name.startsWith(p)) files.delete(name);
@@ -58,7 +59,7 @@ test("account snapshots isolate libraries, preserve legacy owners, survive missi
           }));
           b.onLoad({ filter: /.*/, namespace: "memory" }, () => ({
             contents:
-              "export const deleteAsync=fs.deleteAsync;export const documentDirectory=fs.documentDirectory;export const getInfoAsync=fs.getInfoAsync;export const readAsStringAsync=fs.readAsStringAsync;export const writeAsStringAsync=fs.writeAsStringAsync;",
+              "export const readDirectoryAsync=fs.readDirectoryAsync;export const deleteAsync=fs.deleteAsync;export const documentDirectory=fs.documentDirectory;export const getInfoAsync=fs.getInfoAsync;export const readAsStringAsync=fs.readAsStringAsync;export const writeAsStringAsync=fs.writeAsStringAsync;",
           }));
         },
       },
@@ -134,6 +135,13 @@ test("account snapshots isolate libraries, preserve legacy owners, survive missi
   assert.equal((await store.readLocal(a)).documents.length, 0);
   assert.equal((await store.readLocal(b)).queue[0].owner, b);
   assert.equal(files.get("local/pdfast-state-1.json"), original);
+  // A claimed shared backup must not retain the deleted account's library or sessions.
+  files.set("local/pdfast-account-"+a+"-state-resume-v1-backup.json",JSON.stringify(old));
+  await store.purgeDeletedWorkspace(a);
+  assert.equal(files.has("local/pdfast-account-"+a+"-state-resume-v1-backup.json"),false);
+  const legacy=JSON.parse(files.get("local/pdfast-state-1.json")!);
+  assert.deepEqual(legacy.documents,[]);assert.ok(legacy.queue.every((q:any)=>q.owner!==a));
+  assert.equal((await store.readLocal(b)).queue[0].owner,b);
 });
 test("reimport validates hash and restores the canonical v2 sequence without credit or resetting progress", () => {
   const extraction = {

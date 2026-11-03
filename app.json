@@ -2,7 +2,7 @@
   "expo": {
     "name": "PDFast Reader",
     "slug": "pdfast-reader",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "default",
     "userInterfaceStyle": "light",
     "ios": {
@@ -21,7 +21,8 @@
         ],
         "ExpoLocalization_supportsRTL": false,
         "NSPhotoLibraryUsageDescription": "Escolha uma imagem para usar como capa de um PDF. / Choose an image for a PDF cover."
-      }
+      },
+      "buildNumber": "2"
     },
     "android": {
       "package": "com.pdfast.reader"
@@ -54,6 +55,7 @@
         }
       ]
     ],
-    "scheme": "com.pdfast.reader"
+    "scheme": "com.pdfast.reader",
+    "icon": "./assets/branding/app-icon.png"
   }
 }

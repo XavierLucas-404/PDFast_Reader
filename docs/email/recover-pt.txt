@@ -1,0 +1,6 @@
+PDFast Reader
+
+Redefina sua senha
+{{ .ConfirmationURL }}
+
+Se você não solicitou esta ação, ignore esta mensagem.

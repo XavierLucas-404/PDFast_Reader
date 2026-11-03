@@ -57,7 +57,7 @@ export function cloudDocument(d: Document): CloudDocument {
     pageCount: d.pageCount || d.words[d.words.length - 1]?.page || 1,
     position: d.legacyPosition ?? 0,
     readingStart: d.readingStart || 0,
-    seen: ranges(d.seen),
+    seen: ranges(d.undatedSeen ?? d.seen),
     completed: !!d.completed,
     shelfId: d.shelfId || "",
     libraryOrder: orderValue(d),
@@ -164,6 +164,9 @@ export function mergeLibrary<
       resumePage: page,
       readingStart,
       seen,
+      undatedSeen: [
+        ...new Set([...(l?.undatedSeen ?? []), ...expand(r.seen, r.total)]),
+      ],
       completed: !!l?.completed || r.completed,
       shelfId: choose("shelfId") || undefined,
       libraryOrder:

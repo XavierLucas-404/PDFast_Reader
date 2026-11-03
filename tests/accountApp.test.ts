@@ -35,6 +35,14 @@ test("two app installations isolate accounts, retain old data for an explicit cl
       {
         name: "native-test",
         setup(build) {
+          build.onResolve({ filter: /\/monitoring$/ }, () => ({
+            path: "monitoring",
+            namespace: "monitoring-stub",
+          }));
+          build.onLoad({ filter: /.*/, namespace: "monitoring-stub" }, () => ({
+            contents: "export const Sentry={wrap:x=>x};",
+            loader: "js",
+          }));
           build.onResolve({ filter: /^react-native-gesture-handler$/ }, () => ({
             path: "gestures",
             namespace: "stub",
@@ -303,7 +311,7 @@ test("two app installations isolate accounts, retain old data for an explicit cl
         n.type === "ScrollView" &&
         n.props.contentContainerStyle?.paddingHorizontal === 16,
     );
-    assert.equal(tabScrolls.length, 4);
+    assert.equal(tabScrolls.length, 3);
     assert.ok(
       tabScrolls.every(
         (n: any) => n.props.contentContainerStyle.paddingVertical === 22,
@@ -565,7 +573,7 @@ test("two app installations isolate accounts, retain old data for an explicit cl
       staleSwipe.onChange(1, staleSwipe.request.id);
       await flush();
     });
-    assert.equal(pager().props.index, 3); // old gesture cannot undo the button tap
+    assert.equal(pager().props.index, 2); // old gesture cannot undo the button tap
     await act(async () => {
       tab(r1, "Perfil").props.onPress();
       await flush();

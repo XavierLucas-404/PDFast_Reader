@@ -1,0 +1,128 @@
+              ) : !auth || recovery ? (
+                <>
+                  <Text style={s.title}>{t(`tabs.${pageTab}`)}</Text>
+                  <Text style={s.body}>{t("friends.signInHint")}</Text>
+                  <Button
+                    label={t("friends.goProfile")}
+                    onPress={() => changeTab("profile")}
+                  />
+                </>
+              ) : pageTab === "friends" ? (
+                <>
+                  {field(t("friends.search"), search, setSearch)}
+                  <Button
+                    label={t("common.search")}
+                    onPress={() =>
+                      void action(async () =>
+                        setResults(
+                          (await rpc("search_profiles", { p_query: search })) ||
+                            [],
+                        ),
+                      )
+                    }
+                  />
+                  {results.map((p) => (
+                    <View key={p.id} style={s.card}>
+                      <Text style={s.section}>@{p.username}</Text>
+                      <Button
+                        secondary
+                        label={t("friends.invite")}
+                        onPress={() =>
+                          void action(async () => {
+                            await rpc("request_friend", { p_target: p.id });
+                            await refresh();
+                          })
+                        }
+                      />
+                    </View>
+                  ))}
+                  {friends.map((f) => (
+                    <View key={f.id} style={s.card}>
+                      <Text style={s.section}>@{f.username}</Text>
+                      <Text style={s.muted}>
+                        {f.status === "accepted"
+                          ? t("common.friend")
+                          : f.incoming
+                            ? t("friends.received")
+                            : t("friends.sent")}
+                      </Text>
+                      {f.incoming && f.status === "pending" && (
+                        <Button
+                          label={t("common.accept")}
+                          onPress={() =>
+                            void action(async () => {
+                              await rpc("respond_friend", {
+                                p_id: f.id,
+                                p_accept: true,
+                              });
+                              await refresh();
+                            })
+                          }
+                        />
+                      )}
+                      <Button
+                        secondary
+                        label={
+                          f.status === "accepted"
+                            ? t("friends.remove")
+                            : t("friends.decline")
+                        }
+                        onPress={() =>
+                          void action(async () => {
+                            await rpc("remove_friend", { p_id: f.id });
+                            await refresh();
+                          })
+                        }
+                      />
+                    </View>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <Text style={s.title}>{t("ranking.title")}</Text>
+                  <Text style={s.muted}>
+                    {t("ranking.ends", { date: formatDate(nextWeek(), true) })}
+                  </Text>
+                  <Button
+                    label={t("ranking.refresh")}
+                    onPress={() => void autoSync.current?.request(true)}
+                  />
+                  {ranking.map((r) => (
+                    <View key={r.id} style={s.card}>
+                      <Text style={s.section}>
+                        {t("ranking.entry", {
+                          place: ordinal(r.placement),
+                          username: r.username,
+                        })}
+                      </Text>
+                      <Text style={s.body}>
+                        {t("profile.validWords", { count: Number(r.words) })}
+                      </Text>
+                    </View>
+                  ))}
+                  <Text style={s.body}>{t("ranking.rewardHint")}</Text>
+                  <Text style={s.muted}>{t("ranking.friendsHint")}</Text>
+                  <Button
+                    secondary
+                    label={t("ranking.medals")}
+                    onPress={() =>
+                      void action(async () => {
+                        const rewards = await rpc("my_rewards");
+                        Alert.alert(
+                          t("common.medals"),
+                          rewards?.length
+                            ? rewards
+                                .map((r: any) =>
+                                  t("ranking.medalEntry", {
+                                    place: ordinal(r.placement),
+                                    date: formatDate(r.week),
+                                  }),
+                                )
+                                .join("\n")
+                            : t("ranking.emptyMedals"),
+                        );
+                      })
+                    }
+                  />
+                </>
+              )}

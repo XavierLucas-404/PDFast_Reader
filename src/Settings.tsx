@@ -1,3 +1,4 @@
+import { Support } from "./Support";
 import { DisclosureArrow } from "./DisclosureArrow";
 import { Text, TextInput } from "./Typography";
 import React, { useEffect, useState } from "react";
@@ -316,6 +317,7 @@ export function Settings({
       >
         <Text style={styles.label}>{t("settings.reset")}</Text>
       </TouchableOpacity>
+      <Support />
     </View>
   );
 }

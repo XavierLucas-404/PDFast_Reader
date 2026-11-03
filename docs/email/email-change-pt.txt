@@ -1,0 +1,6 @@
+PDFast Reader
+
+Confirme a alteração de e-mail
+{{ .ConfirmationURL }}
+
+Se você não solicitou esta ação, ignore esta mensagem.

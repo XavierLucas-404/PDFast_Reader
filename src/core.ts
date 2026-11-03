@@ -22,6 +22,9 @@ export type Document = {
   /** Compatibility value from old catalogs, not the current local word. */
   legacyPosition?: number;
   seen: number[];
+  /** History predating timestamped activity; never assigned a fabricated date. */
+  undatedSeen?: number[];
+  baselineSyncedCount?: number;
   pageCount?: number;
   extractionVersion?: number;
   readingStart?: number;
@@ -44,6 +47,10 @@ export type ReadingSession = {
   positions: number[];
   wpm: number;
   activeMs: number;
+  startedAt?: string;
+  day?: string;
+  zone?: string;
+  novelPositions?: number[];
 };
 export function delay(word: Word, wpm: number) {
   return (

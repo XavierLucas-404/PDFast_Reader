@@ -89,6 +89,12 @@ export function migrateDocument(
           : (oldToNew.get(document.legacyPosition) ?? 0),
       readingStart: oldToNew.get(document.readingStart || 0) ?? 0,
       seen: sources.flatMap((s, i) => (s.every((p) => seen.has(p)) ? [i] : [])),
+      undatedSeen:
+        document.undatedSeen === undefined
+          ? undefined
+          : sources.flatMap((s, i) =>
+              s.every((p) => document.undatedSeen!.includes(p)) ? [i] : [],
+            ),
       chapterStarts: result.chapterStarts || [],
       chapterDetectionVersion: CHAPTER_DETECTION_VERSION,
     },

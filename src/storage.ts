@@ -1,3 +1,5 @@
+import { orphanedReadingFiles } from "./fileRetention";
+import type { ProgressSnapshot } from "./progression";
 import { migrateResume } from "./resume";
 import { AppError } from "./i18n";
 import { restoreShelves, type Shelf } from "./shelves";
@@ -12,6 +14,9 @@ export type Local = {
   shelves: Shelf[];
   cloud?: CloudState;
   resumeMigrationVersion?: 1;
+  activityVersion?: 1;
+  progression?: ProgressSnapshot;
+  guestDaily?: Record<string, number>;
   pendingDocuments?: Document[];
   legacySessionsImported?: boolean;
   legacyClaimImported?: boolean;
@@ -166,6 +171,17 @@ export async function readLocal(owner?: string | null): Promise<Local> {
     };
     await writeLocal(value, owner);
   }
+  if (owner !== undefined && !value.activityVersion) {
+    value = {
+      ...value,
+      activityVersion: 1,
+      documents: value.documents.map((d) => ({
+        ...d,
+        undatedSeen: d.undatedSeen ?? [...d.seen],
+      })),
+    };
+    await writeLocal(value, owner);
+  }
   return restoreShelves(value);
 }
 export function writeLocal(value: Local, owner?: string | null) {
@@ -267,7 +283,8 @@ async function performClaim(owner: string, current: Local): Promise<Local> {
   const documents = [...current.documents];
   for (const d of old.documents) {
     const existing = documents.findIndex((v) => v.hash === d.hash);
-    if (existing < 0) documents.push(d);
+    if (existing < 0)
+      documents.push({ ...d, undatedSeen: d.undatedSeen ?? [...d.seen] });
     else {
       const current = documents[existing];
       if (
@@ -284,6 +301,12 @@ async function performClaim(owner: string, current: Local): Promise<Local> {
         position: d.position,
         readingStart: d.readingStart,
         seen: [...new Set([...current.seen, ...d.seen])],
+        undatedSeen: [
+          ...new Set([
+            ...(current.undatedSeen || []),
+            ...(d.undatedSeen ?? d.seen),
+          ]),
+        ],
         localResumeValid: d.localResumeValid,
         resumePage: d.resumePage ?? current.resumePage,
         conflict: undefined,
@@ -303,10 +326,53 @@ export async function clearWorkspace(owner: string) {
     ...empty,
     legacySessionsImported: true,
     legacyClaimImported: true,
+    activityVersion: 1 as const,
+    resumeMigrationVersion: 1 as const,
   };
   await writeLocal(clean, owner);
   await writeLocal(clean, owner);
   await FS.deleteAsync(FS.documentDirectory + "pdfast-covers/" + owner + "/", {
     idempotent: true,
   });
+}
+
+/** Purges migration backups and unreferenced hashed files after remote account deletion. */
+export async function purgeDeletedWorkspace(owner: string) {
+  await clearWorkspace(owner);
+  const files = await FS.readDirectoryAsync(FS.documentDirectory!);
+  for (const name of files.filter(
+    (n) =>
+      n.startsWith(`pdfast-account-${owner}-`) && !/state-[01]\.json$/.test(n),
+  ))
+    await FS.deleteAsync(FS.documentDirectory + name, { idempotent: true });
+  const marker = await claimMarker();
+  if (marker?.owner === owner) {
+    for (const name of files.filter((n) => /^pdfast-state.*\.json$/.test(n))) {
+      const old = JSON.parse(
+        await FS.readAsStringAsync(FS.documentDirectory + name),
+      );
+      await FS.writeAsStringAsync(
+        FS.documentDirectory + name,
+        JSON.stringify({
+          ...old,
+          documents: [],
+          pendingDocuments: [],
+          shelves: [],
+          queue: (old.queue || []).filter(
+            (q: ReadingSession) => q.owner !== owner,
+          ),
+        }),
+      );
+    }
+  }
+  // Preserve content if any retained snapshot is unreadable; never guess another account's references.
+  const snapshots = [];
+  for (const name of files.filter((n) => /^pdfast-.*state.*\.json$/.test(n))) {
+    if (!(await FS.getInfoAsync(FS.documentDirectory + name)).exists) continue;
+    snapshots.push(
+      JSON.parse(await FS.readAsStringAsync(FS.documentDirectory + name)),
+    );
+  }
+  for (const name of orphanedReadingFiles(files, snapshots))
+    await FS.deleteAsync(FS.documentDirectory + name, { idempotent: true });
 }

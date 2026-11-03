@@ -1,3 +1,12 @@
+import { Sentry } from "./src/monitoring";
+import { recordDiagnostic } from "./src/diagnostics";
+import { Progression } from "./src/ProgressScreen";
+import {
+  activityStamp,
+  sameActivityDay,
+  cloneSession,
+  MAX_WPM,
+} from "./src/progression";
 import { bookmark, resumePage, localResume, wordPosition } from "./src/resume";
 import { AppFonts } from "./src/AppFonts";
 import { Text, TextInput } from "./src/Typography";
@@ -65,7 +74,7 @@ import {
   writeLocal,
   legacyAvailable,
   claimLegacy,
-  clearWorkspace,
+  purgeDeletedWorkspace,
 } from "./src/storage";
 import { profileState } from "./src/profileLogic";
 import { ManageProfile } from "./src/ManageProfile";
@@ -88,7 +97,7 @@ import { getReadingContext } from "./src/readingContext";
 import { WordReader } from "./src/WordReader";
 import { PlaybackClock } from "./src/playback";
 import { PdfView } from "./src/PdfView";
-const tabs = ["library", "friends", "ranking", "profile"] as const;
+const tabs = ["library", "progression", "profile"] as const;
 const message = (e: unknown) => authError(e);
 function Button({
   label,
@@ -134,7 +143,7 @@ function Button({
     </TouchableOpacity>
   );
 }
-export default function App() {
+function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
@@ -516,6 +525,11 @@ function AppContent() {
       elapsedRef.current += duration;
       setElapsed(elapsedRef.current);
       setSessionWords((n) => n + 1);
+      const stamp = activityStamp();
+      const novel = !stateRef.current.documents
+        .find((d) => d.hash === current.hash)
+        ?.seen.includes(pos);
+      if (chunk.current && !sameActivityDay(chunk.current, stamp)) flush();
       if (auth) {
         if (!chunk.current)
           chunk.current = {
@@ -524,20 +538,30 @@ function AppContent() {
             hash: current.hash,
             total: current.words.length,
             positions: [],
+            novelPositions: [],
+            ...stamp,
             wpm,
             activeMs: 0,
           };
         chunk.current.positions.push(pos);
+        if (novel) chunk.current.novelPositions!.push(pos);
         chunk.current.activeMs += duration;
       }
       if (chapterWait(current.chapterStarts, pos)) setChapterTransition(true);
       update(
         (v) => ({
           ...v,
+          guestDaily:
+            !auth && novel
+              ? {
+                  ...v.guestDaily,
+                  [stamp.day]: (v.guestDaily?.[stamp.day] || 0) + 1,
+                }
+              : v.guestDaily,
           queue: chunk.current
             ? [
                 ...v.queue.filter((q) => q.id !== chunk.current!.id),
-                { ...chunk.current, positions: [...chunk.current.positions] },
+                cloneSession(chunk.current),
               ]
             : v.queue,
           documents: v.documents.map((d) => {
@@ -609,8 +633,10 @@ function AppContent() {
           if (syncInFlight.current === task) syncInFlight.current = null;
         }
       },
-      (error) =>
-        setSyncError(m("errors.sync", { reason: errorMessage(error) })),
+      (error) => {
+        recordDiagnostic("sync", error, stateRef.current.queue.length);
+        setSyncError(m("errors.sync", { reason: errorMessage(error) }));
+      },
       () => setSyncError(""),
     );
     autoSync.current = controller;
@@ -638,7 +664,7 @@ function AppContent() {
       !recovery &&
       active &&
       !current &&
-      (tab === "ranking" || tab === "profile" || tab === "friends")
+      (tab === "progression" || tab === "profile")
     ) {
       void autoSync.current?.request();
     }
@@ -647,19 +673,13 @@ function AppContent() {
     if (!auth) return;
     const owner = auth.user.id;
     setProfileError("");
-    const results = await Promise.allSettled([
-      rpc("list_friends", {}, owner),
-      rpc("weekly_ranking", {}, owner),
-      rpc("my_profile", {}, owner),
-    ]);
-    if (authOwner.current !== owner) return;
-    const [f, r, p] = results;
-    if (f.status === "fulfilled") setFriends(f.value || []);
-    if (r.status === "fulfilled") setRanking(r.value || []);
-    if (p.status === "fulfilled") setProfile(p.value?.[0] || null);
-    else setProfileError(errorMessage(p.reason));
-    const failed = results.find((result) => result.status === "rejected");
-    if (failed?.status === "rejected") throw failed.reason;
+    try {
+      const p = await rpc("my_profile", {}, owner);
+      if (authOwner.current === owner) setProfile(p?.[0] || null);
+    } catch (error) {
+      if (authOwner.current === owner) setProfileError(errorMessage(error));
+      throw error;
+    }
   }
 
   async function sync() {
@@ -732,12 +752,32 @@ function AppContent() {
           owner,
         );
         if (!valid()) return;
+        if (
+          document.undatedSeen?.length &&
+          document.baselineSyncedCount !== document.undatedSeen.length
+        )
+          await rpc(
+            "record_activity_baseline",
+            {
+              p_hash: document.hash,
+              p_total: total,
+              p_positions: document.undatedSeen,
+            },
+            owner,
+          );
+        if (!valid()) return;
         registered.set(document.hash, start);
         update(
           (v) => ({
             ...v,
             documents: v.documents.map((d) =>
-              d.hash === document.hash ? { ...d, synced: true } : d,
+              d.hash === document.hash
+                ? {
+                    ...d,
+                    synced: true,
+                    baselineSyncedCount: document.undatedSeen?.length || 0,
+                  }
+                : d,
             ),
           }),
           false,
@@ -762,14 +802,17 @@ function AppContent() {
       for (const c of pending) {
         if (!valid()) return;
         await rpc(
-          "submit_session",
+          "submit_reading_activity",
           {
             p_id: c.id,
             p_hash: c.hash,
             p_total: c.total,
             p_positions: c.positions,
             p_wpm: c.wpm,
-            p_active_ms: Math.round(c.activeMs),
+            p_active_ms: Math.ceil(c.activeMs),
+            p_started_at: c.startedAt ?? null,
+            p_day: c.day ?? null,
+            p_zone: c.zone ?? null,
           },
           c.owner,
         );
@@ -779,7 +822,12 @@ function AppContent() {
           false,
         );
       }
-      if (valid()) await refresh();
+      if (valid()) {
+        const snapshot = await rpc("reading_progress", {}, owner);
+        if (valid() && snapshot && typeof snapshot.daily === "object")
+          update((v) => ({ ...v, progression: snapshot }), false);
+        await refresh();
+      }
     } finally {
       syncLock.current = false;
     }
@@ -944,6 +992,7 @@ function AppContent() {
       localResumeValid: false,
       resumePage: 1,
       seen: [],
+      undatedSeen: [],
       libraryOrder:
         Math.max(
           -1,
@@ -1038,7 +1087,7 @@ function AppContent() {
         queue: chunk.current
           ? [
               ...v.queue.filter((q) => q.id !== chunk.current!.id),
-              { ...chunk.current, positions: [...chunk.current.positions] },
+              cloneSession(chunk.current),
             ]
           : v.queue,
         documents: v.documents.map((d) =>
@@ -1163,7 +1212,7 @@ function AppContent() {
               label="+ 25"
               onPress={() => {
                 pauseReading();
-                setWpm(Math.min(800, wpm + 25));
+                setWpm(Math.min(MAX_WPM, wpm + 25));
               }}
             />
             <Button
@@ -1181,11 +1230,7 @@ function AppContent() {
           </View>
 
           <Text style={[s.muted, { color: palette.muted }]}>
-            {!eligible(wpm, true)
-              ? t("reader.noScore")
-              : auth
-                ? ""
-                : t("reader.signInToScore")}
+            {!auth ? t("reader.localActivity") : ""}
           </Text>
           {syncFailure}
           {notice ? (
@@ -1426,7 +1471,9 @@ function AppContent() {
                                           {},
                                           auth.user.id,
                                         );
-                                        await clearWorkspace(auth.user.id);
+                                        await purgeDeletedWorkspace(
+                                          auth.user.id,
+                                        );
                                         clearShelfOffsets(auth.user.id);
                                         stateRef.current = empty;
                                         setLocal(empty);
@@ -1557,133 +1604,13 @@ function AppContent() {
                     </>
                   )}
                 </>
-              ) : !auth || recovery ? (
-                <>
-                  <Text style={s.title}>{t(`tabs.${pageTab}`)}</Text>
-                  <Text style={s.body}>{t("friends.signInHint")}</Text>
-                  <Button
-                    label={t("friends.goProfile")}
-                    onPress={() => changeTab("profile")}
-                  />
-                </>
-              ) : pageTab === "friends" ? (
-                <>
-                  {field(t("friends.search"), search, setSearch)}
-                  <Button
-                    label={t("common.search")}
-                    onPress={() =>
-                      void action(async () =>
-                        setResults(
-                          (await rpc("search_profiles", { p_query: search })) ||
-                            [],
-                        ),
-                      )
-                    }
-                  />
-                  {results.map((p) => (
-                    <View key={p.id} style={s.card}>
-                      <Text style={s.section}>@{p.username}</Text>
-                      <Button
-                        secondary
-                        label={t("friends.invite")}
-                        onPress={() =>
-                          void action(async () => {
-                            await rpc("request_friend", { p_target: p.id });
-                            await refresh();
-                          })
-                        }
-                      />
-                    </View>
-                  ))}
-                  {friends.map((f) => (
-                    <View key={f.id} style={s.card}>
-                      <Text style={s.section}>@{f.username}</Text>
-                      <Text style={s.muted}>
-                        {f.status === "accepted"
-                          ? t("common.friend")
-                          : f.incoming
-                            ? t("friends.received")
-                            : t("friends.sent")}
-                      </Text>
-                      {f.incoming && f.status === "pending" && (
-                        <Button
-                          label={t("common.accept")}
-                          onPress={() =>
-                            void action(async () => {
-                              await rpc("respond_friend", {
-                                p_id: f.id,
-                                p_accept: true,
-                              });
-                              await refresh();
-                            })
-                          }
-                        />
-                      )}
-                      <Button
-                        secondary
-                        label={
-                          f.status === "accepted"
-                            ? t("friends.remove")
-                            : t("friends.decline")
-                        }
-                        onPress={() =>
-                          void action(async () => {
-                            await rpc("remove_friend", { p_id: f.id });
-                            await refresh();
-                          })
-                        }
-                      />
-                    </View>
-                  ))}
-                </>
               ) : (
-                <>
-                  <Text style={s.title}>{t("ranking.title")}</Text>
-                  <Text style={s.muted}>
-                    {t("ranking.ends", { date: formatDate(nextWeek(), true) })}
-                  </Text>
-                  <Button
-                    label={t("ranking.refresh")}
-                    onPress={() => void autoSync.current?.request(true)}
-                  />
-                  {ranking.map((r) => (
-                    <View key={r.id} style={s.card}>
-                      <Text style={s.section}>
-                        {t("ranking.entry", {
-                          place: ordinal(r.placement),
-                          username: r.username,
-                        })}
-                      </Text>
-                      <Text style={s.body}>
-                        {t("profile.validWords", { count: Number(r.words) })}
-                      </Text>
-                    </View>
-                  ))}
-                  <Text style={s.body}>{t("ranking.rewardHint")}</Text>
-                  <Text style={s.muted}>{t("ranking.friendsHint")}</Text>
-                  <Button
-                    secondary
-                    label={t("ranking.medals")}
-                    onPress={() =>
-                      void action(async () => {
-                        const rewards = await rpc("my_rewards");
-                        Alert.alert(
-                          t("common.medals"),
-                          rewards?.length
-                            ? rewards
-                                .map((r: any) =>
-                                  t("ranking.medalEntry", {
-                                    place: ordinal(r.placement),
-                                    date: formatDate(r.week),
-                                  }),
-                                )
-                                .join("\n")
-                            : t("ranking.emptyMedals"),
-                        );
-                      })
-                    }
-                  />
-                </>
+                <Progression
+                  local={local}
+                  owner={auth?.user.id}
+                  active={pageTab === tab && active}
+                  onOpen={openDocument}
+                />
               )}
             </ScrollView>
           ))}
@@ -1868,3 +1795,5 @@ const s = StyleSheet.create({
   track: { height: 5, backgroundColor: colors.soft, borderRadius: 4 },
   fill: { height: 5, backgroundColor: colors.gold, borderRadius: 4 },
 });
+
+export default Sentry.wrap(App);

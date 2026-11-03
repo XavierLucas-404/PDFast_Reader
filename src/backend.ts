@@ -1,3 +1,4 @@
+import {recordDiagnostic} from "./diagnostics";
 import { AppError } from "./i18n";
 import "react-native-url-polyfill/auto";
 import "./authCrypto";
@@ -59,6 +60,6 @@ export async function rpc(
     request.setHeader("Authorization", "Bearer " + data.session.access_token);
   }
   const { data, error } = await request;
-  if (error) throw error;
+  if (error) { recordDiagnostic(name,error); throw error; }
   return data;
 }
