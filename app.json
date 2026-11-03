@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "PDFast Reader",
+    "slug": "pdfast-reader",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pdfast.reader",
+      "entitlements": {
+        "application-identifier": "$(DEVELOPMENT_TEAM).$(PRODUCT_BUNDLE_IDENTIFIER)",
+        "keychain-access-groups": [
+          "$(DEVELOPMENT_TEAM).$(PRODUCT_BUNDLE_IDENTIFIER)"
+        ]
+      },
+      "infoPlist": {
+        "CFBundleLocalizations": [
+          "pt-BR",
+          "en"
+        ],
+        "ExpoLocalization_supportsRTL": false,
+        "NSPhotoLibraryUsageDescription": "Escolha uma imagem para usar como capa de um PDF. / Choose an image for a PDF cover."
+      }
+    },
+    "android": {
+      "package": "com.pdfast.reader"
+    },
+    "plugins": [
+      "expo-document-picker",
+      "expo-secure-store",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "pt-BR",
+              "en"
+            ],
+            "android": [
+              "pt",
+              "en"
+            ]
+          },
+          "supportsRTL": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Escolha uma imagem para usar como capa de um PDF. / Choose an image for a PDF cover.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
+    ],
+    "scheme": "com.pdfast.reader"
+  }
+}

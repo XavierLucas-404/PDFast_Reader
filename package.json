@@ -1,0 +1,47 @@
+{
+  "name": "pdfast-reader",
+  "version": "0.1.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "typecheck": "tsc --noEmit && npm run validate:i18n",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "bundle:pdf": "node scripts/bundle-pdf.mjs",
+    "validate:i18n": "node --import tsx scripts/validate-i18n.ts"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@supabase/supabase-js": "2.117.3",
+    "expo": "~54.0.0",
+    "expo-crypto": "~15.0.7",
+    "expo-document-picker": "~14.0.7",
+    "expo-file-system": "~19.0.21",
+    "expo-font": "~14.0.12",
+    "expo-image-manipulator": "~14.0.8",
+    "expo-image-picker": "~17.0.11",
+    "expo-localization": "~17.0.9",
+    "expo-secure-store": "~15.0.8",
+    "expo-status-bar": "~3.0.9",
+    "pdfjs-dist": "4.10.38",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-reanimated": "~4.1.1",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-webview": "13.15.0",
+    "react-native-worklets": "0.5.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.9",
+    "@types/react": "~19.1.10",
+    "esbuild": "^0.25.10",
+    "prettier": "^3.9.10",
+    "react-test-renderer": "19.1.0",
+    "tsx": "^4.20.5",
+    "typescript": "~5.9.2"
+  }
+}

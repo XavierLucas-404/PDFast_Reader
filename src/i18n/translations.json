@@ -1,0 +1,1200 @@
+{
+  "common": {
+    "cancel": {
+      "pt": "Cancelar",
+      "en": "Cancel"
+    },
+    "save": {
+      "pt": "Salvar",
+      "en": "Save"
+    },
+    "delete": {
+      "pt": "Excluir",
+      "en": "Delete"
+    },
+    "rename": {
+      "pt": "Renomear",
+      "en": "Rename"
+    },
+    "signOut": {
+      "pt": "Sair",
+      "en": "Sign out"
+    },
+    "retry": {
+      "pt": "Tentar novamente",
+      "en": "Try again"
+    },
+    "wait": {
+      "pt": "Aguarde…",
+      "en": "Please wait…"
+    },
+    "accept": {
+      "pt": "Aceitar",
+      "en": "Accept"
+    },
+    "search": {
+      "pt": "Buscar",
+      "en": "Search"
+    },
+    "email": {
+      "pt": "E-mail",
+      "en": "Email"
+    },
+    "password": {
+      "pt": "Senha",
+      "en": "Password"
+    },
+    "medals": {
+      "pt": "Medalhas",
+      "en": "Medals"
+    },
+    "friend": {
+      "pt": "Amigo",
+      "en": "Friend"
+    },
+    "system": {
+      "pt": "Sistema",
+      "en": "System"
+    },
+    "language": {
+      "pt": "Idioma",
+      "en": "Language"
+    },
+    "languageSavedError": {
+      "pt": "Não foi possível salvar o idioma. Tente novamente.",
+      "en": "Could not save the language. Please try again."
+    },
+    "portuguese": {
+      "pt": "Português",
+      "en": "Português"
+    },
+    "english": {
+      "pt": "English",
+      "en": "English"
+    },
+    "confirm": {
+      "pt": "Confirmar",
+      "en": "Confirm"
+    },
+    "close": {
+      "pt": "Fechar",
+      "en": "Close"
+    },
+    "back": {
+      "pt": "Voltar",
+      "en": "Back"
+    },
+    "portugueseBrazil": {
+      "pt": "Português do Brasil",
+      "en": "Brazilian Portuguese"
+    },
+    "englishUS": {
+      "pt": "Inglês dos Estados Unidos",
+      "en": "American English"
+    }
+  },
+  "tabs": {
+    "library": {
+      "pt": "Biblioteca",
+      "en": "Library"
+    },
+    "friends": {
+      "pt": "Amigos",
+      "en": "Friends"
+    },
+    "ranking": {
+      "pt": "Ranking",
+      "en": "Leaderboard"
+    },
+    "profile": {
+      "pt": "Perfil",
+      "en": "Profile"
+    }
+  },
+  "library": {
+    "importPdf": {
+      "pt": "Importar PDF",
+      "en": "Import PDF"
+    },
+    "newShelf": {
+      "pt": "Nova estante",
+      "en": "New shelf"
+    },
+    "unassigned": {
+      "pt": "Sem estante",
+      "en": "Unassigned"
+    },
+    "emptyTitle": {
+      "pt": "Sua biblioteca começa aqui",
+      "en": "Your library starts here"
+    },
+    "emptyBody": {
+      "pt": "Importe um PDF com texto, de até 30 MB, e crie estantes para organizar suas próximas leituras.",
+      "en": "Import a text-based PDF of up to 30 MB and create shelves to organize your next reads."
+    },
+    "emptyShelf": {
+      "pt": "Sua estante está pronta para receber livros.",
+      "en": "Your shelf is ready for books."
+    },
+    "unassignedBody": {
+      "pt": "PDFs sem categoria aparecem aqui.",
+      "en": "Uncategorized PDFs appear here."
+    },
+    "moveHint": {
+      "pt": "Use o menu de um livro para movê-lo para uma estante.",
+      "en": "Use a book’s menu to move it to a shelf."
+    },
+    "coverLabel": {
+      "pt": "BIBLIOTECA PESSOAL",
+      "en": "PERSONAL LIBRARY"
+    },
+    "missingPdf": {
+      "pt": "PDF não encontrado neste dispositivo",
+      "en": "PDF not found on this device"
+    },
+    "renameShelf": {
+      "pt": "Renomear estante",
+      "en": "Rename shelf"
+    },
+    "deleteShelf": {
+      "pt": "Excluir estante",
+      "en": "Delete shelf"
+    },
+    "shelfPrompt": {
+      "pt": "Dê um nome ao lugar das suas leituras.",
+      "en": "Give your reading space a name."
+    },
+    "shelfName": {
+      "pt": "Nome da estante",
+      "en": "Shelf name"
+    },
+    "saveShelf": {
+      "pt": "Salvar estante",
+      "en": "Save shelf"
+    },
+    "move": {
+      "pt": "Mover para estante",
+      "en": "Move to shelf"
+    },
+    "open": {
+      "pt": "Abrir PDF",
+      "en": "Open PDF"
+    },
+    "locate": {
+      "pt": "Importar arquivo",
+      "en": "Import file"
+    },
+    "renameDocument": {
+      "pt": "Renomear documento",
+      "en": "Rename document"
+    },
+    "renameHint": {
+      "pt": "Somente o título na biblioteca será alterado.",
+      "en": "Only the title in your library will change."
+    },
+    "documentTitle": {
+      "pt": "Título do documento",
+      "en": "Document title"
+    },
+    "saveTitle": {
+      "pt": "Salvar título",
+      "en": "Save title"
+    },
+    "deleteShelfTitle": {
+      "pt": "Excluir “{name}”?",
+      "en": "Delete “{name}”?"
+    },
+    "deleteShelfBody": {
+      "pt": "Os PDFs serão movidos para Sem estante. Nenhum arquivo será apagado.",
+      "en": "The PDFs will be moved to Unassigned. No files will be deleted."
+    },
+    "shelfOptions": {
+      "pt": "Opções da estante {name}",
+      "en": "Options for shelf {name}"
+    },
+    "documentOptions": {
+      "pt": "Opções de {filename}",
+      "en": "Options for {filename}"
+    },
+    "documentProgressOptions": {
+      "pt": "Opções de {filename}, {percent} apresentado",
+      "en": "Options for {filename}, {percent} presented"
+    },
+    "onDevice": {
+      "pt": "No seu dispositivo",
+      "en": "On your device"
+    },
+    "summary": {
+      "pt": "{pdfs} · {shelves} · No seu dispositivo",
+      "en": "{pdfs} · {shelves} · On your device"
+    },
+    "progress": {
+      "pt": "{percent} apresentado",
+      "en": "{percent} presented"
+    },
+    "legacyTitle": {
+      "pt": "Vincular biblioteca antiga?",
+      "en": "Link the previous library?"
+    },
+    "legacyBanner": {
+      "pt": "Há uma biblioteca antiga compartilhada neste aparelho. Escolha a conta que deve recebê-la.",
+      "en": "This device has a previous shared library. Choose the account that should receive it."
+    },
+    "legacyLink": {
+      "pt": "Vincular biblioteca antiga",
+      "en": "Link previous library"
+    },
+    "legacyLater": {
+      "pt": "Decidir depois",
+      "en": "Decide later"
+    },
+    "legacyConfirm": {
+      "pt": "Vincular a esta conta",
+      "en": "Link to this account"
+    },
+    "legacyBody": {
+      "pt": "A biblioteca antiga era compartilhada neste aparelho. Ela será vinculada uma única vez à conta {email}. Pontuação e sessões de outras contas não serão transferidas.",
+      "en": "The previous library was shared on this device. It will be linked once to {email}. Scores and sessions from other accounts will not be transferred."
+    },
+    "locationTitle": {
+      "pt": "Qual posição deseja retomar?",
+      "en": "Where would you like to resume?"
+    },
+    "locationBody": {
+      "pt": "{filename} tem posições diferentes neste aparelho e na biblioteca sincronizada. O histórico de palavras será preservado.",
+      "en": "{filename} has different positions on this device and in the synced library. Your word history will be preserved."
+    },
+    "locationLocal": {
+      "pt": "Deste aparelho",
+      "en": "This device"
+    },
+    "locationRemote": {
+      "pt": "Sincronizada",
+      "en": "Synced position"
+    },
+    "loading": {
+      "pt": "Carregando biblioteca…",
+      "en": "Loading library…"
+    },
+    "pdfCount": {
+      "pt": {
+        "one": "{count} PDF",
+        "other": "{count} PDFs"
+      },
+      "en": {
+        "one": "{count} PDF",
+        "other": "{count} PDFs"
+      }
+    },
+    "shelfCount": {
+      "pt": {
+        "one": "{count} estante",
+        "other": "{count} estantes"
+      },
+      "en": {
+        "one": "{count} shelf",
+        "other": "{count} shelves"
+      }
+    },
+    "bookCount": {
+      "pt": {
+        "one": "{count} livro",
+        "other": "{count} livros"
+      },
+      "en": {
+        "one": "{count} book",
+        "other": "{count} books"
+      }
+    },
+    "wordCount": {
+      "pt": {
+        "one": "{count} palavra",
+        "other": "{count} palavras"
+      },
+      "en": {
+        "one": "{count} word",
+        "other": "{count} words"
+      }
+    },
+    "covers": {
+      "pt": "Capas",
+      "en": "Covers"
+    },
+    "spines": {
+      "pt": "Lombadas",
+      "en": "Spines"
+    },
+    "changeCover": {
+      "pt": "Alterar capa",
+      "en": "Change cover"
+    },
+    "chooseCover": {
+      "pt": "Escolher capa",
+      "en": "Choose cover"
+    },
+    "pdfCover": {
+      "pt": "Página do PDF",
+      "en": "PDF page"
+    },
+    "defaultCover": {
+      "pt": "Padrão",
+      "en": "Default"
+    },
+    "galleryCover": {
+      "pt": "Imagem da galeria",
+      "en": "Gallery image"
+    },
+    "useCover": {
+      "pt": "Usar capa",
+      "en": "Use cover"
+    },
+    "skipCover": {
+      "pt": "Pular",
+      "en": "Skip"
+    },
+    "coverFailed": {
+      "pt": "Não foi possível preparar a capa. Tente novamente.",
+      "en": "Could not prepare the cover. Please try again."
+    },
+    "photoDenied": {
+      "pt": "Permita o acesso à imagem nas configurações do dispositivo.",
+      "en": "Allow access to the image in your device settings."
+    },
+    "cropCover": {
+      "pt": "Ajustar recorte",
+      "en": "Adjust crop"
+    },
+    "cropHint": {
+      "pt": "Arraste a imagem e ajuste o zoom.",
+      "en": "Drag the image and adjust the zoom."
+    },
+    "moveBefore": {
+      "pt": "Mover antes",
+      "en": "Move previous"
+    },
+    "moveAfter": {
+      "pt": "Mover depois",
+      "en": "Move next"
+    },
+    "dropHere": {
+      "pt": "Solte aqui",
+      "en": "Drop here"
+    },
+    "organizeBook": {
+      "pt": "Organizar {filename}",
+      "en": "Organize {filename}"
+    },
+    "coverLocal": {
+      "pt": "Imagens da galeria ficam somente neste dispositivo.",
+      "en": "Gallery images stay on this device."
+    },
+    "reorder": {
+      "pt": "Reorganizar",
+      "en": "Reorder"
+    },
+    "emptyReorder": {
+      "pt": "Nenhum PDF nesta estante.",
+      "en": "No PDFs on this shelf."
+    }
+  },
+  "reader": {
+    "wordMode": {
+      "pt": "Palavra por palavra",
+      "en": "Word by word"
+    },
+    "backLibrary": {
+      "pt": "Voltar à Biblioteca",
+      "en": "Back to Library"
+    },
+    "context": {
+      "pt": "Contexto da leitura",
+      "en": "Reading context"
+    },
+    "previousWord": {
+      "pt": "Palavra anterior",
+      "en": "Previous word"
+    },
+    "nextWord": {
+      "pt": "Próxima palavra",
+      "en": "Next word"
+    },
+    "play": {
+      "pt": "Iniciar leitura",
+      "en": "Start reading"
+    },
+    "pause": {
+      "pt": "Pausar leitura",
+      "en": "Pause reading"
+    },
+    "tapPause": {
+      "pt": "Pausar leitura e mostrar controles",
+      "en": "Pause reading and show controls"
+    },
+    "newChapter": {
+      "pt": "Novo capítulo",
+      "en": "New chapter"
+    },
+    "pages": {
+      "pt": "Ver páginas do PDF",
+      "en": "View PDF pages"
+    },
+    "noScore": {
+      "pt": "Acima de 600 ppm: leitura sem pontuação competitiva.",
+      "en": "Above 600 wpm: reading does not earn competitive points."
+    },
+    "signInToScore": {
+      "pt": "Entre na conta antes de ler para pontuar na competição.",
+      "en": "Sign in before reading to earn competitive points."
+    },
+    "complete": {
+      "pt": "PDF concluído. Você pode reler quando quiser.",
+      "en": "PDF complete. You can reread it whenever you like."
+    },
+    "incomplete": {
+      "pt": "Fim do PDF. Ainda há trechos não apresentados para concluir a leitura.",
+      "en": "End of PDF. Some passages still need to be presented to complete your reading."
+    },
+    "preparing": {
+      "pt": "Preparando seu PDF…",
+      "en": "Preparing your PDF…"
+    },
+    "upgrading": {
+      "pt": "Atualizando a extração do PDF…",
+      "en": "Updating PDF extraction…"
+    },
+    "analyzing": {
+      "pt": "Analisando texto e capitulares. Seu progresso será preservado.",
+      "en": "Analyzing text and drop caps. Your progress will be preserved."
+    },
+    "extractPreserved": {
+      "pt": "Extração preservada",
+      "en": "Extraction preserved"
+    },
+    "originalPreserved": {
+      "pt": "Extração original preservada",
+      "en": "Original extraction preserved"
+    },
+    "importFailed": {
+      "pt": "Não foi possível importar",
+      "en": "Could not import"
+    },
+    "pageProgress": {
+      "pt": "Página {page} · {percent} apresentado",
+      "en": "Page {page} · {percent} presented"
+    },
+    "sessionStats": {
+      "pt": "Página {page} · {percent} apresentado · {words} na sessão · {minutes} min",
+      "en": "Page {page} · {percent} presented · {words} this session · {minutes} min"
+    },
+    "speed": {
+      "pt": "{speed} ppm",
+      "en": "{speed} wpm"
+    },
+    "pageOf": {
+      "pt": "Página {page} de {total}",
+      "en": "Page {page} of {total}"
+    },
+    "pageInvalid": {
+      "pt": "Página inválida",
+      "en": "Invalid page"
+    },
+    "pageRange": {
+      "pt": "Escolha uma página entre 1 e {total}.",
+      "en": "Choose a page between 1 and {total}."
+    },
+    "previousPage": {
+      "pt": "Página anterior",
+      "en": "Previous page"
+    },
+    "nextPage": {
+      "pt": "Próxima página",
+      "en": "Next page"
+    },
+    "pageNumber": {
+      "pt": "Número da página",
+      "en": "Page number"
+    },
+    "ofTotal": {
+      "pt": "de {total}",
+      "en": "of {total}"
+    },
+    "go": {
+      "pt": "Ir",
+      "en": "Go"
+    },
+    "goPage": {
+      "pt": "Ir para página",
+      "en": "Go to page"
+    },
+    "chooseSentence": {
+      "pt": "Escolha a frase inicial",
+      "en": "Choose a starting sentence"
+    },
+    "sentenceHint": {
+      "pt": "Página {page} · o texto anterior não fará parte do progresso desta leitura.",
+      "en": "Page {page} · earlier text will not count toward this reading goal."
+    },
+    "emptySentences": {
+      "pt": "Esta página não tem frases com texto extraível. Escolha outra página.",
+      "en": "This page has no sentences with extractable text. Choose another page."
+    },
+    "sentenceContinued": {
+      "pt": "Continua entre as páginas {first} e {last}",
+      "en": "Continues across pages {first}–{last}"
+    },
+    "startHere": {
+      "pt": "Começar daqui",
+      "en": "Start here"
+    },
+    "opening": {
+      "pt": "Abrindo PDF…",
+      "en": "Opening PDF…"
+    },
+    "smallerFont": {
+      "pt": "Diminuir tamanho do texto",
+      "en": "Decrease text size"
+    },
+    "largerFont": {
+      "pt": "Aumentar tamanho do texto",
+      "en": "Increase text size"
+    },
+    "backPages": {
+      "pt": "Voltar às páginas do PDF",
+      "en": "Back to PDF pages"
+    },
+    "resumeHere": {
+      "pt": "Retomar daqui",
+      "en": "Resume here"
+    },
+    "defineStartHere": {
+      "pt": "Definir início da leitura aqui",
+      "en": "Set reading start here"
+    },
+    "resumeSavedWord": {
+      "pt": "Continuar da palavra salva",
+      "en": "Continue from saved word"
+    }
+  },
+  "auth": {
+    "login": {
+      "pt": "Entrar",
+      "en": "Sign in"
+    },
+    "signup": {
+      "pt": "Criar conta",
+      "en": "Create account"
+    },
+    "confirmEmail": {
+      "pt": "Confirme seu e-mail",
+      "en": "Confirm your email"
+    },
+    "forgotTitle": {
+      "pt": "Recuperar senha",
+      "en": "Reset password"
+    },
+    "newPasswordTitle": {
+      "pt": "Definir nova senha",
+      "en": "Set a new password"
+    },
+    "usernameTitle": {
+      "pt": "Escolha seu nome de usuário",
+      "en": "Choose your username"
+    },
+    "unavailable": {
+      "pt": "Contas ainda indisponíveis nesta instalação. A biblioteca e a leitura funcionam sem cadastro.",
+      "en": "Accounts are not available in this installation yet. You can use the library and reader without an account."
+    },
+    "newPasswordMin": {
+      "pt": "Nova senha (mínimo 8 caracteres)",
+      "en": "New password (at least 8 characters)"
+    },
+    "confirmNewPassword": {
+      "pt": "Confirme a nova senha",
+      "en": "Confirm your new password"
+    },
+    "savePassword": {
+      "pt": "Salvar nova senha",
+      "en": "Save new password"
+    },
+    "cancelSignOut": {
+      "pt": "Cancelar e sair",
+      "en": "Cancel and sign out"
+    },
+    "usernameHint": {
+      "pt": "Seus amigos vão encontrar você por esse nome. Use de 3 a 24 letras minúsculas, números ou _.",
+      "en": "Your friends will find you by this name. Use 3–24 lowercase letters, numbers, or _."
+    },
+    "username": {
+      "pt": "Nome de usuário",
+      "en": "Username"
+    },
+    "saveUsername": {
+      "pt": "Salvar nome de usuário",
+      "en": "Save username"
+    },
+    "usernameRule": {
+      "pt": "Use de 3 a 24 letras minúsculas, números ou _.",
+      "en": "Use 3–24 lowercase letters, numbers, or _."
+    },
+    "confirmSent": {
+      "pt": "Enviamos uma mensagem para {email}. Abra o link neste dispositivo para confirmar o cadastro.",
+      "en": "We sent a message to {email}. Open the link on this device to confirm your account."
+    },
+    "confirmPassword": {
+      "pt": "Confirme a senha",
+      "en": "Confirm password"
+    },
+    "forgot": {
+      "pt": "Esqueci minha senha",
+      "en": "Forgot password"
+    },
+    "resendEmail": {
+      "pt": "Reenviar confirmação de e-mail",
+      "en": "Resend confirmation email"
+    },
+    "resend": {
+      "pt": "Reenviar confirmação",
+      "en": "Resend confirmation"
+    },
+    "resent": {
+      "pt": "Se houver um cadastro pendente, enviaremos um novo link.",
+      "en": "If an account is awaiting confirmation, we will send a new link."
+    },
+    "recoveryHint": {
+      "pt": "Solicite e abra o link neste dispositivo para definir uma nova senha.",
+      "en": "Request and open the link on this device to set a new password."
+    },
+    "sendRecovery": {
+      "pt": "Enviar link de recuperação",
+      "en": "Send reset link"
+    },
+    "recoverySent": {
+      "pt": "Se esse e-mail estiver cadastrado, você receberá um link de recuperação.",
+      "en": "If this email is registered, you will receive a password reset link."
+    },
+    "backLogin": {
+      "pt": "Voltar para entrar",
+      "en": "Back to sign in"
+    },
+    "privacy": {
+      "pt": "Você pode usar a Biblioteca sem conta. Com uma conta, títulos, estantes e progresso são sincronizados; PDFs e texto extraído permanecem neste dispositivo.",
+      "en": "You can use the library without an account. With an account, titles, shelves, and progress are synced; PDFs and extracted text stay on this device."
+    },
+    "emailConfirmed": {
+      "pt": "E-mail confirmado. Sua conta está pronta.",
+      "en": "Email confirmed. Your account is ready."
+    }
+  },
+  "profile": {
+    "manage": {
+      "pt": "Gerenciar perfil",
+      "en": "Manage profile"
+    },
+    "back": {
+      "pt": "Voltar ao Perfil",
+      "en": "Back to Profile"
+    },
+    "usernameRule": {
+      "pt": "3–24 letras minúsculas, números ou _",
+      "en": "3–24 lowercase letters, numbers, or _"
+    },
+    "usernameSaved": {
+      "pt": "Nome de usuário atualizado.",
+      "en": "Username updated."
+    },
+    "currentEmail": {
+      "pt": "E-mail atual",
+      "en": "Current email"
+    },
+    "pendingEmail": {
+      "pt": "Aguardando confirmação: {email}",
+      "en": "Awaiting confirmation: {email}"
+    },
+    "newEmail": {
+      "pt": "Novo e-mail",
+      "en": "New email"
+    },
+    "changeEmail": {
+      "pt": "Alterar e-mail",
+      "en": "Change email"
+    },
+    "emailRequested": {
+      "pt": "Solicitação enviada. Confira as mensagens de confirmação no e-mail atual e no novo. O endereço só muda após as confirmações exigidas.",
+      "en": "Request sent. Check your current and new email addresses for confirmation messages. Your address changes only after the required confirmations."
+    },
+    "newPassword": {
+      "pt": "Nova senha",
+      "en": "New password"
+    },
+    "confirmPassword": {
+      "pt": "Confirmar nova senha",
+      "en": "Confirm new password"
+    },
+    "changePassword": {
+      "pt": "Alterar senha",
+      "en": "Change password"
+    },
+    "passwordSaved": {
+      "pt": "Senha atualizada.",
+      "en": "Password updated."
+    },
+    "resetPasswordEmail": {
+      "pt": "Redefinir senha por e-mail",
+      "en": "Reset password by email"
+    },
+    "resetSent": {
+      "pt": "Confira seu e-mail e abra o link neste dispositivo para redefinir a senha.",
+      "en": "Check your email and open the link on this device to reset your password."
+    },
+    "deleteAccount": {
+      "pt": "Excluir minha conta",
+      "en": "Delete my account"
+    },
+    "deleteTitle": {
+      "pt": "Excluir conta?",
+      "en": "Delete account?"
+    },
+    "deleteBody": {
+      "pt": "Perfil, amizades, pontuação e recompensas serão apagados. PDFs locais permanecem disponíveis.",
+      "en": "Your profile, friendships, scores, and rewards will be deleted. Local PDF files will remain on the device."
+    },
+    "comprehension": {
+      "pt": "Apresentação de palavras não comprova compreensão.",
+      "en": "Presenting words does not prove comprehension."
+    },
+    "loading": {
+      "pt": "Carregando perfil…",
+      "en": "Loading profile…"
+    },
+    "accountStats": {
+      "pt": "{words} · {pdfs} na conta",
+      "en": "{words} · {pdfs} on this account"
+    },
+    "themesUntil": {
+      "pt": "Temas extras até {date}",
+      "en": "Extra themes until {date}"
+    },
+    "themesHint": {
+      "pt": "Temas extras: ganhe uma colocação no top 3.",
+      "en": "Extra themes: earn a top-three position."
+    },
+    "amber": {
+      "pt": "Ativar tema âmbar",
+      "en": "Enable amber theme"
+    },
+    "green": {
+      "pt": "Voltar ao tema verde",
+      "en": "Switch back to green theme"
+    },
+    "deviceHint": {
+      "pt": "Ao trocar de dispositivo, importe os PDFs novamente. Títulos, estantes e progresso são sincronizados. Arquivos e texto extraído permanecem no dispositivo.",
+      "en": "When switching devices, import your PDFs again. Titles, shelves, and progress are synced. Files and extracted text stay on the device."
+    },
+    "completedLibrary": {
+      "pt": {
+        "one": "{count} PDF concluído nesta biblioteca",
+        "other": "{count} PDFs concluídos nesta biblioteca"
+      },
+      "en": {
+        "one": "{count} PDF completed in this library",
+        "other": "{count} PDFs completed in this library"
+      }
+    },
+    "presentedWords": {
+      "pt": {
+        "one": "{count} palavra distinta apresentada",
+        "other": "{count} palavras distintas apresentadas"
+      },
+      "en": {
+        "one": "{count} distinct word presented",
+        "other": "{count} distinct words presented"
+      }
+    },
+    "validWords": {
+      "pt": {
+        "one": "{count} palavra válida",
+        "other": "{count} palavras válidas"
+      },
+      "en": {
+        "one": "{count} valid word",
+        "other": "{count} valid words"
+      }
+    },
+    "completedPdfs": {
+      "pt": {
+        "one": "{count} PDF concluído",
+        "other": "{count} PDFs concluídos"
+      },
+      "en": {
+        "one": "{count} PDF completed",
+        "other": "{count} PDFs completed"
+      }
+    },
+    "completedLabel": {
+      "pt": {
+        "one": "PDF concluído nesta biblioteca",
+        "other": "PDFs concluídos nesta biblioteca"
+      },
+      "en": {
+        "one": "PDF completed in this library",
+        "other": "PDFs completed in this library"
+      }
+    },
+    "edit": {
+      "pt": "Editar perfil",
+      "en": "Edit profile"
+    },
+    "passwordToggle": {
+      "pt": "Mudar senha",
+      "en": "Change password"
+    },
+    "savePassword": {
+      "pt": "Salvar senha",
+      "en": "Save password"
+    },
+    "backManage": {
+      "pt": "Voltar a Gerenciar perfil",
+      "en": "Back to Manage profile"
+    }
+  },
+  "friends": {
+    "signInHint": {
+      "pt": "Entre no Perfil para competir com seus amigos.",
+      "en": "Sign in from Profile to compete with your friends."
+    },
+    "goProfile": {
+      "pt": "Ir para Perfil",
+      "en": "Go to Profile"
+    },
+    "search": {
+      "pt": "Buscar nome de usuário",
+      "en": "Search username"
+    },
+    "invite": {
+      "pt": "Enviar convite",
+      "en": "Send request"
+    },
+    "received": {
+      "pt": "Convite recebido",
+      "en": "Request received"
+    },
+    "sent": {
+      "pt": "Convite enviado",
+      "en": "Request sent"
+    },
+    "remove": {
+      "pt": "Remover amigo",
+      "en": "Remove friend"
+    },
+    "decline": {
+      "pt": "Recusar / cancelar",
+      "en": "Decline / cancel"
+    }
+  },
+  "ranking": {
+    "title": {
+      "pt": "Ranking da semana",
+      "en": "Weekly leaderboard"
+    },
+    "ends": {
+      "pt": "Encerra em {date}. Semana definida em UTC.",
+      "en": "Ends {date}. Weeks are defined in UTC."
+    },
+    "refresh": {
+      "pt": "Atualizar ranking",
+      "en": "Refresh leaderboard"
+    },
+    "rewardHint": {
+      "pt": "Top 3: medalhas. Empates compartilham a colocação.",
+      "en": "Top three: medals. Ties share a place."
+    },
+    "friendsHint": {
+      "pt": "Seu ranking inclui você e seus amigos aceitos. Recompensas usam essa mesma comparação no fechamento.",
+      "en": "Your leaderboard includes you and your accepted friends. Rewards use the same comparison when the week closes."
+    },
+    "medals": {
+      "pt": "Ver minhas medalhas",
+      "en": "View my medals"
+    },
+    "medalEntry": {
+      "pt": "{place} · semana de {date}",
+      "en": "{place} · week of {date}"
+    },
+    "emptyMedals": {
+      "pt": "Continue lendo: suas medalhas aparecerão aqui.",
+      "en": "Keep reading: your medals will appear here."
+    },
+    "entry": {
+      "pt": "{place} · @{username}",
+      "en": "{place} · @{username}"
+    }
+  },
+  "errors": {
+    "generic": {
+      "pt": "Não foi possível concluir. Tente novamente.",
+      "en": "Could not complete the request. Please try again."
+    },
+    "save": {
+      "pt": "Não foi possível salvar: {reason}",
+      "en": "Could not save: {reason}"
+    },
+    "loadLibrary": {
+      "pt": "Não foi possível carregar a biblioteca: {reason}",
+      "en": "Could not load the library: {reason}"
+    },
+    "sync": {
+      "pt": "Não foi possível sincronizar. Suas sessões estão salvas neste dispositivo. {reason}",
+      "en": "Could not sync. Your sessions are saved on this device. {reason}"
+    },
+    "catalogConcurrent": {
+      "pt": "A biblioteca foi alterada em outro aparelho. As mudanças locais estão preservadas e serão sincronizadas novamente.",
+      "en": "The library changed on another device. Your local changes are preserved and will be synced again."
+    },
+    "fileSize": {
+      "pt": "Nesta versão, importe PDFs de até 30 MB.",
+      "en": "In this version, import PDFs of up to 30 MB."
+    },
+    "syncCheck": {
+      "pt": "Não foi possível confirmar a sincronização.",
+      "en": "Could not verify sync status."
+    },
+    "chapterDeferred": {
+      "pt": "Capítulos identificados. A correção das palavras aguarda conexão e a conta responsável pelas sessões pendentes. O histórico foi preservado.",
+      "en": "Chapters detected. Word corrections require a connection and the account that owns the pending sessions. Your history is preserved."
+    },
+    "extractionPreserved": {
+      "pt": "Extração anterior preservada: {reason}",
+      "en": "Previous extraction preserved: {reason}"
+    },
+    "extractionHistory": {
+      "pt": "A extração deste arquivo não corresponde ao histórico salvo. Seu progresso foi preservado.",
+      "en": "The text extracted from this file does not match your saved history. Your progress is preserved."
+    },
+    "authUnavailable": {
+      "pt": "O serviço de contas ainda não foi configurado. Você pode continuar lendo sem conta.",
+      "en": "The account service has not been configured yet. You can keep reading without an account."
+    },
+    "weakPassword": {
+      "pt": "Use uma senha de pelo menos 8 caracteres.",
+      "en": "Use a password with at least 8 characters."
+    },
+    "passwordMismatch": {
+      "pt": "As senhas não coincidem.",
+      "en": "The passwords do not match."
+    },
+    "accountChangedManage": {
+      "pt": "A conta mudou. Abra o gerenciamento novamente.",
+      "en": "The account changed. Open profile management again."
+    },
+    "differentEmail": {
+      "pt": "Digite um e-mail diferente do atual.",
+      "en": "Enter an email address different from your current one."
+    },
+    "pdfOpen": {
+      "pt": "Falha ao abrir o PDF.",
+      "en": "Could not open the PDF."
+    },
+    "signup": {
+      "pt": "Não foi possível criar a conta. Tente entrar ou recuperar sua senha.",
+      "en": "Could not create the account. Try signing in or resetting your password."
+    },
+    "emailInvalid": {
+      "pt": "Digite um e-mail válido.",
+      "en": "Enter a valid email address."
+    },
+    "emailUnauthorized": {
+      "pt": "O envio de e-mails ainda não foi liberado para esse endereço. É necessário configurar o serviço de e-mail.",
+      "en": "Email delivery has not been enabled for this address. The email service must be configured."
+    },
+    "reauthenticate": {
+      "pt": "Confirme sua identidade. Use Redefinir senha por e-mail para continuar.",
+      "en": "Confirm your identity. Use Reset password by email to continue."
+    },
+    "samePassword": {
+      "pt": "Escolha uma senha diferente da anterior.",
+      "en": "Choose a password different from your previous one."
+    },
+    "credentials": {
+      "pt": "E-mail ou senha incorretos.",
+      "en": "Incorrect email or password."
+    },
+    "emailUnconfirmed": {
+      "pt": "Confirme seu e-mail antes de entrar.",
+      "en": "Confirm your email before signing in."
+    },
+    "usernameTaken": {
+      "pt": "Esse nome de usuário já está em uso.",
+      "en": "This username is already taken."
+    },
+    "usernameRule": {
+      "pt": "Use de 3 a 24 letras minúsculas, números ou _ no nome de usuário.",
+      "en": "Use 3–24 lowercase letters, numbers, or _ in your username."
+    },
+    "linkExpired": {
+      "pt": "O link expirou ou já foi utilizado. Solicite um novo e-mail neste dispositivo.",
+      "en": "The link expired or has already been used. Request a new email on this device."
+    },
+    "rateLimit": {
+      "pt": "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.",
+      "en": "Too many attempts. Wait a few minutes before trying again."
+    },
+    "network": {
+      "pt": "Sem conexão. Verifique sua internet e tente novamente. A leitura local continua disponível.",
+      "en": "No connection. Check your internet and try again. Local reading is still available."
+    },
+    "linkInvalidExpired": {
+      "pt": "O link expirou ou é inválido. Solicite um novo e-mail.",
+      "en": "The link expired or is invalid. Request a new email."
+    },
+    "linkInvalid": {
+      "pt": "Link inválido. Solicite um novo e-mail neste dispositivo.",
+      "en": "Invalid link. Request a new email on this device."
+    },
+    "configureBackend": {
+      "pt": "Configure o Supabase para usar os recursos sociais.",
+      "en": "Configure Supabase to use social features."
+    },
+    "accountChanged": {
+      "pt": "A conta mudou. Tente novamente.",
+      "en": "The account changed. Please try again."
+    },
+    "previousExtraction": {
+      "pt": "A extração anterior não corresponde ao PDF. Histórico preservado.",
+      "en": "The previous extraction does not match this PDF. Your history is preserved."
+    },
+    "extractionMap": {
+      "pt": "Mapeamento de extração incompleto.",
+      "en": "Incomplete extraction mapping."
+    },
+    "chapterMap": {
+      "pt": "Não foi possível associar capítulos à extração salva. Histórico preservado.",
+      "en": "Could not match chapters to the saved extraction. Your history is preserved."
+    },
+    "wordSplit": {
+      "pt": "A migração dividiria uma palavra já contabilizada.",
+      "en": "This migration would split a word that has already been counted."
+    },
+    "differentFile": {
+      "pt": "Este arquivo é diferente do PDF da biblioteca. Selecione o arquivo original; seu progresso foi preservado.",
+      "en": "This file differs from the PDF in your library. Select the original file; your progress is preserved."
+    },
+    "cloudExtraction": {
+      "pt": "A extração local não corresponde à biblioteca sincronizada. Histórico preservado.",
+      "en": "The local extraction does not match the synced library. Your history is preserved."
+    },
+    "sessionInvalid": {
+      "pt": "Sessão salva inválida.",
+      "en": "Invalid saved session."
+    },
+    "sessionIncomplete": {
+      "pt": "Sessão salva incompleta.",
+      "en": "Incomplete saved session."
+    },
+    "shelfLength": {
+      "pt": "Use um nome entre 1 e 60 caracteres.",
+      "en": "Use a name between 1 and 60 characters."
+    },
+    "shelfReserved": {
+      "pt": "Este nome é reservado para PDFs sem estante.",
+      "en": "This name is reserved for PDFs without a shelf."
+    },
+    "shelfDuplicate": {
+      "pt": "Já existe uma estante com esse nome.",
+      "en": "A shelf with this name already exists."
+    },
+    "shelfMissing": {
+      "pt": "Estante não encontrada.",
+      "en": "Shelf not found."
+    },
+    "workspace": {
+      "pt": "Conta inválida para armazenamento local.",
+      "en": "Invalid account for local storage."
+    },
+    "claimInvalid": {
+      "pt": "Registro de migração inválido. Biblioteca antiga preservada.",
+      "en": "Invalid migration record. The previous library is preserved."
+    },
+    "claimOther": {
+      "pt": "A biblioteca antiga já foi escolhida para outra conta. Entre nessa conta para concluir a migração.",
+      "en": "The previous library has already been assigned to another account. Sign in to that account to finish the migration."
+    },
+    "claimExtraction": {
+      "pt": "Há uma extração diferente para este PDF na conta escolhida. A biblioteca antiga foi preservada.",
+      "en": "The selected account has a different extraction for this PDF. The previous library is preserved."
+    },
+    "pdfProtected": {
+      "pt": "PDF protegido por senha. Importe uma cópia desbloqueada.",
+      "en": "This PDF is password protected. Import an unlocked copy."
+    },
+    "pdfUnsupported": {
+      "pt": "PDF incompatível.",
+      "en": "Unsupported PDF."
+    },
+    "wordLimit": {
+      "pt": "O limite desta versão é de um milhão de palavras.",
+      "en": "This version supports up to one million words."
+    },
+    "pdfNoText": {
+      "pt": "Este PDF não contém texto extraível. Arquivos digitalizados precisam de OCR.",
+      "en": "This PDF has no extractable text. Scanned files require OCR."
+    },
+    "crypto": {
+      "pt": "Algoritmo não suportado.",
+      "en": "Unsupported algorithm."
+    }
+  },
+  "settings": {
+    "title": {
+      "pt": "Configurações",
+      "en": "Settings"
+    },
+    "background": {
+      "pt": "Plano de fundo",
+      "en": "Background"
+    },
+    "word": {
+      "pt": "Palavras",
+      "en": "Words"
+    },
+    "original": {
+      "pt": "Atual",
+      "en": "Original"
+    },
+    "light": {
+      "pt": "Clara",
+      "en": "Light"
+    },
+    "dark": {
+      "pt": "Escura",
+      "en": "Dark"
+    },
+    "sepia": {
+      "pt": "Sépia",
+      "en": "Sepia"
+    },
+    "invalidColor": {
+      "pt": "Use uma cor no formato #RRGGBB.",
+      "en": "Use a color in #RRGGBB format."
+    },
+    "hue": {
+      "pt": "Matiz: {label}",
+      "en": "Hue: {label}"
+    },
+    "shade": {
+      "pt": "Tom: {label}",
+      "en": "Shade: {label}"
+    },
+    "preview": {
+      "pt": "Leitura",
+      "en": "Reading"
+    },
+    "lowContrast": {
+      "pt": "O contraste entre as palavras e o fundo está baixo.",
+      "en": "The contrast between words and background is low."
+    },
+    "reset": {
+      "pt": "Restaurar padrão",
+      "en": "Restore defaults"
+    }
+  }
+}
