@@ -134,6 +134,12 @@ export function AppModal({
     <Modal
       visible={visible && presented}
       transparent
+      supportedOrientations={[
+        "portrait",
+        "portrait-upside-down",
+        "landscape-left",
+        "landscape-right",
+      ]}
       animationType="fade"
       statusBarTranslucent
       navigationBarTranslucent

@@ -34,6 +34,7 @@ type Props = {
   previousDisabled: boolean;
   nextDisabled: boolean;
   children: React.ReactNode;
+  essentialControls?: React.ReactNode;
 };
 export function WordReader(props: Props) {
   useI18n();
@@ -209,14 +210,17 @@ export function WordReader(props: Props) {
                   onPress={props.onNext}
                 />
               </View>
-              <ScrollView
-                style={[styles.settings, landscape && styles.landscapeSettings]}
-                contentContainerStyle={styles.settingsContent}
-                showsVerticalScrollIndicator
-              >
-                {props.children}
-              </ScrollView>
+              <View style={styles.essentialControls}>
+                {props.essentialControls}
+              </View>
             </View>
+            <ScrollView
+              style={styles.settings}
+              contentContainerStyle={styles.settingsContent}
+              showsVerticalScrollIndicator
+            >
+              {props.children}
+            </ScrollView>
           </SafeAreaView>
         </>
       )}
@@ -260,14 +264,15 @@ const styles = StyleSheet.create({
     color: colors.muted,
     textAlign: "center",
   },
-  controls: { flex: 1, minHeight: 0 },
+  controls: { flexShrink: 0, minHeight: 0 },
+  essentialControls: { flexShrink: 1, paddingHorizontal: 12 },
   landscapeControls: {
     flexDirection: "row",
-    alignItems: "stretch",
+    alignItems: "center",
     paddingHorizontal: 16,
     gap: 12,
   },
-  landscapeSettings: { flex: 1, minHeight: 0 },
+
   footer: { position: "absolute", bottom: 0, left: 0, right: 0 },
   transport: {
     flexDirection: "row",
@@ -277,6 +282,6 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 8,
   },
-  settings: { flexShrink: 1 },
+  settings: { flex: 1, minHeight: 0 },
   settingsContent: { paddingHorizontal: 22, paddingBottom: 16, gap: 10 },
 });

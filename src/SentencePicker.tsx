@@ -41,66 +41,24 @@ export function SentencePicker({
   return (
     <AppModal onClose={onCancel} scroll={false}>
       <Text style={modalStyles.title}>{t("reader.chooseSentence")}</Text>
-      <Text style={styles.muted}>{t("reader.sentenceHint", { page })}</Text>
-      {heading ? <Text style={styles.heading}>{heading}</Text> : null}
       <FlatList
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: 0 }}
         data={choices}
         keyExtractor={(item) => String(item.start)}
         contentContainerStyle={{ gap: 12, paddingVertical: 16 }}
         ListHeaderComponent={
-          resumePosition !== undefined ? (
-            <TouchableOpacity
-              accessibilityRole="button"
-              onPress={() => onConfirm(resumePosition, false)}
-              style={[styles.button, { backgroundColor: colors.soft }]}
-            >
-              <Text>{t("reader.resumeSavedWord")}</Text>
-            </TouchableOpacity>
-          ) : null
-        }
-        ListFooterComponent={
-          <View style={styles.actions}>
-            <TouchableOpacity
-              accessibilityRole="button"
-              onPress={onCancel}
-              style={styles.button}
-            >
-              <Text>{t("common.cancel")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              accessibilityRole="button"
-              disabled={selected === null}
-              accessibilityState={{ disabled: selected === null }}
-              style={[
-                styles.button,
-                {
-                  backgroundColor: colors.wine,
-                  opacity: selected === null ? 0.4 : 1,
-                },
-              ]}
-              onPress={() => selected !== null && onConfirm(selected, false)}
-            >
-              <Text style={{ color: colors.white, fontWeight: "700" }}>
-                {t("reader.resumeHere")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              accessibilityRole="button"
-              disabled={selected === null}
-              accessibilityState={{ disabled: selected === null }}
-              style={[
-                styles.button,
-                {
-                  backgroundColor: colors.soft,
-                  opacity: selected === null ? 0.4 : 1,
-                },
-              ]}
-              onPress={() => selected !== null && onConfirm(selected, true)}
-            >
-              <Text>{t("reader.defineStartHere")}</Text>
-            </TouchableOpacity>
-          </View>
+          <>
+            {heading ? <Text style={styles.heading}>{heading}</Text> : null}
+            {resumePosition !== undefined ? (
+              <TouchableOpacity
+                accessibilityRole="button"
+                onPress={() => onConfirm(resumePosition, false)}
+                style={[styles.button, { backgroundColor: colors.soft }]}
+              >
+                <Text>{t("reader.resumeSavedWord")}</Text>
+              </TouchableOpacity>
+            ) : null}
+          </>
         }
         ListEmptyComponent={
           <Text style={styles.muted}>{t("reader.emptySentences")}</Text>
@@ -124,6 +82,32 @@ export function SentencePicker({
           </TouchableOpacity>
         )}
       />
+      <View style={styles.actions}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={onCancel}
+          style={styles.button}
+        >
+          <Text>{t("common.cancel")}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          accessibilityRole="button"
+          disabled={selected === null}
+          accessibilityState={{ disabled: selected === null }}
+          style={[
+            styles.button,
+            {
+              backgroundColor: colors.wine,
+              opacity: selected === null ? 0.4 : 1,
+            },
+          ]}
+          onPress={() => selected !== null && onConfirm(selected, false)}
+        >
+          <Text style={{ color: colors.white, fontWeight: "700" }}>
+            {t("reader.resumeHere")}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </AppModal>
   );
 }
@@ -154,6 +138,8 @@ const styles = StyleSheet.create({
   selected: { borderColor: colors.wine, backgroundColor: colors.soft },
   body: { fontSize: 17, lineHeight: 26, color: colors.ink },
   actions: {
+    flexShrink: 0,
+    backgroundColor: colors.paper,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",

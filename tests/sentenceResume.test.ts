@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url),
   { create, act } = require("react-test-renderer");
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-test("sentence picker distinguishes resume from redefining the start, without marking words presented", async () => {
+test("sentence picker keeps resume actions outside the list without redefining progress", async () => {
   const result = await build({
     stdin: {
       contents: `export {SentencePicker} from './src/SentencePicker';export {t} from './src/i18n';`,
@@ -86,6 +86,24 @@ test("sentence picker distinguishes resume from redefining the start, without ma
     await act(async () => {
       tree = create(React.createElement(SentencePicker, props));
     });
+    const texts = tree.root
+      .findAllByType("Text")
+      .map((n: any) => n.children.join(""));
+    assert.ok(texts.includes("Retomar leitura"));
+    assert.ok(!texts.includes(t("reader.sentenceHint", { page: 2 })));
+    assert.equal(button("reader.defineStartHere"), undefined);
+    const list = tree.root.findByType("List");
+    assert.ok(
+      !list
+        .findAllByType("TouchableOpacity")
+        .includes(button("reader.resumeHere")),
+    );
+    assert.ok(
+      !list.findAllByType("TouchableOpacity").includes(button("common.cancel")),
+    );
+    assert.equal(button("reader.resumeHere").parent.props.style.flexShrink, 0);
+    await act(async () => button("common.cancel").props.onPress());
+    assert.equal(cancelled, 1);
     assert.equal(button("reader.resumeHere").props.disabled, true);
     await act(async () => button("reader.resumeSavedWord").props.onPress());
     assert.deepEqual(choices.pop(), [2, false]);
@@ -100,10 +118,9 @@ test("sentence picker distinguishes resume from redefining the start, without ma
     );
     await act(async () => button("reader.resumeHere").props.onPress());
     assert.deepEqual(choices.pop(), [2, false]);
-    await act(async () => button("reader.defineStartHere").props.onPress());
-    assert.deepEqual(choices.pop(), [2, true]);
+    assert.equal(button("reader.defineStartHere"), undefined);
     await act(async () => tree.root.findByType("Modal").props.onClose());
-    assert.equal(cancelled, 1);
+    assert.equal(cancelled, 2);
     assert.deepEqual(document.seen, [0, 1]);
     assert.equal(document.readingStart, 1);
     await act(async () =>
@@ -117,7 +134,7 @@ test("sentence picker distinguishes resume from redefining the start, without ma
       ),
     );
     assert.equal(button("reader.resumeHere").props.disabled, true);
-    assert.equal(button("reader.defineStartHere").props.disabled, true);
+    assert.equal(button("reader.defineStartHere"), undefined);
     assert.equal(button("reader.resumeSavedWord"), undefined);
     assert.ok(
       tree.root

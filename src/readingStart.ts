@@ -65,3 +65,16 @@ export function migrateExtraction(
 ): Document {
   return migrateDocument(document, result).document;
 }
+
+/** A persisted completion is announced once; reaching the end again is ordinary rereading. */
+export function completionMessage(
+  before: Document,
+  after: Document,
+  atEnd: boolean,
+): "reader.complete" | "reader.incomplete" | null {
+  const alreadyComplete = !!before.completed || progress(before).complete;
+  const nowComplete = progress(after).complete;
+  if (!alreadyComplete && nowComplete) return "reader.complete";
+  if (atEnd && !alreadyComplete && !nowComplete) return "reader.incomplete";
+  return null;
+}

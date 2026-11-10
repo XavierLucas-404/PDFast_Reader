@@ -229,3 +229,31 @@ export async function readChapterBookmarks(pdf: {
   } catch {}
   return result;
 }
+
+/** Presentation only: the original positions, intervals and progress remain unchanged. */
+export function chapterDisplayWord(
+  words: readonly Word[],
+  starts: readonly number[] | undefined,
+  position: number,
+): string {
+  const fallback = words[position]?.text || "";
+  const start = starts?.filter((index) => index <= position).at(-1);
+  if (start === undefined || position - start > 12) return fallback;
+  const fragments: string[] = [];
+  for (let end = start; end < Math.min(words.length, start + 13); end++) {
+    if (
+      words[end].page !== words[start].page ||
+      (end > start && starts?.includes(end))
+    )
+      break;
+    fragments.push(words[end].text);
+    const label = normalizeChapterLabel(fragments.join(" "));
+    if (
+      /^(?:chapter|cap[ií]tulo)\s+(?:[0-9]{1,4}|[ivxlcdm]+)[.:]?$/iu.test(label)
+    ) {
+      return position <= end ? label : fallback;
+    }
+    if (words[end].paragraphEnd) break;
+  }
+  return fallback;
+}

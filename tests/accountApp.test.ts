@@ -297,7 +297,7 @@ test("two app installations isolate accounts, retain old data for an explicit cl
       queue: [],
     }),
   );
-  let r1: any, r2: any, r3: any, r4: any;
+  let r1: any, r2: any, r3: any, r4: any, r5: any;
   try {
     await act(async () => {
       r1 = create(React.createElement(first.App));
@@ -684,12 +684,118 @@ test("two app installations isolate accounts, retain old data for an explicit cl
       customColors,
     );
     assert.equal(calls.filter((c) => c.name === "submit_session").length, 0); // restored metadata never awards competitive credit
+
+    // Exercise the actual playback effect and persisted guest state at the last word.
+    const finishFiles = new Map<string, string>([
+      ["local/" + hash + ".pdf", "PDF bytes"],
+      ["local/pdfast-" + hash + ".v2.words.json", JSON.stringify(words)],
+      [
+        "local/pdfast-guest-state-1.json",
+        JSON.stringify({
+          revision: 1,
+          documents: [
+            {
+              hash,
+              title: "Completion.pdf",
+              uri: "local/" + hash + ".pdf",
+              position: 1,
+              localResumeValid: true,
+              resumePage: 2,
+              readingStart: 0,
+              seen: [0],
+              wordCount: 2,
+              extractionVersion: 2,
+              chapterDetectionVersion: CHAPTER_DETECTION_VERSION,
+              chapterStarts: [],
+            },
+          ],
+          queue: [],
+          shelves: [],
+          resumeMigrationVersion: 1,
+          activityVersion: 1,
+        }),
+      ],
+    ]);
+    let finishing = install(finishFiles);
+    const readLast = async () => {
+      await act(async () => {
+        library(r5).props.onOpen(library(r5).props.local.documents[0]);
+        await flush();
+      });
+      await act(async () => {
+        r5.root.findByType("Pages").props.onChooseStart();
+        await flush();
+      });
+      await act(async () => {
+        r5.root
+          .findAll((n: any) => n.type?.name === "SentencePicker")[0]
+          .props.onConfirm(1, false);
+        await flush();
+      });
+      const reader = () =>
+        r5.root.findAll((n: any) => n.type?.name === "WordReader")[0];
+      await act(async () => {
+        reader().props.onPlay();
+        await flush();
+      });
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 550));
+        await flush();
+      });
+      assert.equal(reader().props.playing, false);
+      return reader;
+    };
+    await act(async () => {
+      r5 = create(React.createElement(finishing.App));
+      await flush();
+    });
+    let finishedReader = await readLast();
+    assert.ok(
+      textValues(r5).some(
+        (v: string) =>
+          v.includes("PDF concluído") || v.includes("PDF completed"),
+      ),
+    );
+    await act(async () => {
+      finishedReader().props.onBack();
+      await flush();
+    });
+    assert.equal(r5.root.findByType("Pages").props.document.completed, true);
+    await act(async () => {
+      r5.root.findByType("Pages").props.onBack();
+      await flush();
+    });
+    finishedReader = await readLast();
+    assert.ok(
+      !textValues(r5).some(
+        (v: string) =>
+          v.includes("PDF concluído") || v.includes("PDF completed"),
+      ),
+    );
+    await act(async () => {
+      r5.unmount();
+      await flush();
+    });
+    finishing = install(new Map(finishing.files));
+    await act(async () => {
+      r5 = create(React.createElement(finishing.App));
+      await flush();
+    });
+    assert.deepEqual(library(r5).props.local.documents[0].seen, [0, 1]);
+    await readLast();
+    assert.ok(
+      !textValues(r5).some(
+        (v: string) =>
+          v.includes("PDF concluído") || v.includes("PDF completed"),
+      ),
+    );
   } finally {
     await act(async () => {
       r1?.unmount();
       r2?.unmount();
       r3?.unmount();
       r4?.unmount();
+      r5?.unmount();
       await flush();
     });
   }

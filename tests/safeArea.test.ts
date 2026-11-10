@@ -57,6 +57,8 @@ test("reader protects each overlay edge once and leaves playback touch surface f
     context: "Context.",
     font: 64,
     background: "#fff",
+    essentialControls: React.createElement("Controls"),
+    children: React.createElement("Auxiliary"),
     onPause() {},
     onPlay() {},
     onBack() {},
@@ -76,6 +78,15 @@ test("reader protects each overlay edge once and leaves playback touch surface f
         ["top", "left", "right"],
         ["bottom", "left", "right"],
       ],
+    );
+    const controls = tree.root.findByType("Controls");
+    for (let ancestor = controls.parent; ancestor; ancestor = ancestor.parent) {
+      assert.notEqual(ancestor.type, "ScrollView");
+    }
+    assert.ok(
+      tree.root
+        .findAllByType("ScrollView")
+        .some((n: any) => n.findAllByType("Auxiliary").length),
     );
     const word = () =>
       tree.root

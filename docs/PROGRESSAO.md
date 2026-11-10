@@ -23,3 +23,16 @@ O histórico anterior é capturado como `undatedSeen`, sem fabricar datas. Apare
 `reading_progress` retorna totais diários, legado sem data e intervalos de posições confirmadas. A tela acrescenta somente posições novas ainda pendentes e não confirmadas, evitando duplicação otimista. Após sincronizar, o servidor prevalece. PDFs e texto não são enviados. Títulos e estantes continuam sincronizados pelo catálogo privado.
 
 A conta e o visitante têm espaços separados. Respostas de uma conta anterior são ignoradas. Abrir ou atualizar Progressão não publica leituras. Nenhum gráfico antigo é reconstruído artificialmente.
+
+
+## Validação e ajustes — 2026-11-04
+
+- A apresentação de um cabeçalho reconhecido pode unir visualmente “C H A P T E R 2” em “CHAPTER 2”. As palavras e seus índices continuam intactos; cada posição mantém seu intervalo ativo e sua deduplicação. A pausa extra de dois segundos não conta como atividade. Não houve migração de extração nem mudança do contrato RPC.
+- A mensagem de conclusão depende da transição de incompleto para completo, considerando o estado persistido. Reabrir ou reler um PDF concluído não repete o anúncio. Uma mensagem antiga é limpa ao abrir um PDF ou iniciar reprodução.
+- Suíte completa: 102 testes aprovados. A integração executa a última palavra, verifica a primeira conclusão e repete a leitura antes/depois de reiniciar, sem novo anúncio. PostgreSQL local cobre isolamento, IDs repetidos, 1000 ppm, datas offline e legado.
+- Conferência manual no iPhone 18 Pro / iOS 27.0: semana com 2.354 posições, média 784,7 (três dias decorridos); mês com média 588,5 (quatro dias). Dias sem leitura e futuros ficaram distintos. Outubro encerrado mostrou zero. O gráfico mensal rolou até o dia 30 sem trocar de aba.
+- Fronteiras de dia/fuso/DST/mês foram verificadas por automação; virada real de dia e sincronização offline real continuam pendentes. Valores desta conferência são um retrato anterior ao ensaio prolongado e podem aumentar com novas leituras de teste.
+
+Resultados e limites por ID: [validação iOS](VALIDACAO_IOS_2026-11-04.md).
+
+Ensaio nativo concluído: 20 minutos em primeiro plano, 42 amostras com avanço e mesmo processo; 4.544 apresentações ao pausar. Após reiniciar, a releitura do PDF concluído manteve 1.396 posições únicas e não repetiu o anúncio. Atividade a 1.000 ppm foi exercitada e sincronizada. Como outros PDFs também receberam atividade na mesma conta, a deduplicação manual foi comparada por PDF, sem atribuir todo crescimento global ao ensaio.

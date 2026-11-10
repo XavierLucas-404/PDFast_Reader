@@ -83,13 +83,17 @@ import { authError, errorMessage, parseAuthLink } from "./src/authLogic";
 import { backend, rpc, recoveryState, readOfflineSession } from "./src/backend";
 import { normalizeTitle } from "./src/titles";
 import { EXTRACTION_VERSION, type PdfExtraction } from "./src/extraction";
-import { CHAPTER_DETECTION_VERSION, chapterWait } from "./src/chapters";
+import {
+  CHAPTER_DETECTION_VERSION,
+  chapterWait,
+  chapterDisplayWord,
+} from "./src/chapters";
 import {
   addChapterMetadata,
   migrateDocument,
   migratePendingSessions,
 } from "./src/extractionMigration";
-import { progress } from "./src/readingStart";
+import { progress, completionMessage } from "./src/readingStart";
 import { SentencePicker } from "./src/SentencePicker";
 import { PdfPageReader } from "./src/PdfPageReader";
 import { RenameDocument } from "./src/RenameDocument";
@@ -522,6 +526,9 @@ function AppContent() {
     const duration = delay(word, wpm);
     playbackClock.current.schedule(() => {
       if (!activityRef.current) return;
+      const before = stateRef.current.documents.find(
+        (d) => d.hash === current.hash,
+      )!;
       elapsedRef.current += duration;
       setElapsed(elapsedRef.current);
       setSessionWords((n) => n + 1);
@@ -581,14 +588,16 @@ function AppContent() {
       if (pos === current.words.length - 1) {
         setPlaying(false);
         flush();
-        setNotice(
-          progress(
-            stateRef.current.documents.find((d) => d.hash === current.hash)!,
-          ).complete
-            ? m("reader.complete")
-            : m("reader.incomplete"),
-        );
       } else if ((chunk.current?.positions.length || 0) >= 25) flush();
+      const after = stateRef.current.documents.find(
+        (d) => d.hash === current.hash,
+      )!;
+      const completion = completionMessage(
+        before,
+        after,
+        pos === current.words.length - 1,
+      );
+      if (completion) setNotice(m(completion));
     }, duration);
     return () => {
       playbackClock.current.cancel();
@@ -1016,6 +1025,7 @@ function AppContent() {
   function openDocument(d: Document) {
     const latest = stateRef.current.documents.find((v) => v.hash === d.hash);
     if (!latest || latest.available === false) return;
+    setNotice("");
     setPdfPage(resumePage(latest));
     setSelected(latest.hash);
     setMode("pdf");
@@ -1161,22 +1171,32 @@ function AppContent() {
     </View>
   ) : null;
   if (current && mode === "words" && !processing) {
+    const displayedWord = chapterDisplayWord(
+      current.words,
+      current.chapterStarts,
+      current.position,
+    );
     return (
       <ReaderPaletteContext.Provider value={palette}>
         <WordReader
           title={current.title}
-          word={current.words[current.position]?.text || ""}
+          word={displayedWord}
           playing={playing}
           chapterTransition={chapterTransition}
           context={
             !playing && (current.position > 0 || current.seen.length > 0)
-              ? getReadingContext(current.words, current.position)
+              ? displayedWord !== current.words[current.position]?.text
+                ? displayedWord
+                : getReadingContext(current.words, current.position)
               : ""
           }
           font={font}
           background={palette.background}
           onPause={pauseReading}
-          onPlay={() => setPlaying(true)}
+          onPlay={() => {
+            setNotice("");
+            setPlaying(true);
+          }}
           onBack={() => {
             pauseReading();
             setPdfPage(current.words[current.position]?.page || 1);
@@ -1186,6 +1206,41 @@ function AppContent() {
           onNext={() => navigate(1)}
           previousDisabled={current.position === 0}
           nextDisabled={current.position === current.words.length - 1}
+          essentialControls={
+            <View style={s.row}>
+              <Button
+                secondary
+                label="− 25"
+                onPress={() => {
+                  pauseReading();
+                  setWpm(Math.max(100, wpm - 25));
+                }}
+              />
+              <Text style={[s.body, { color: palette.ink }]}>
+                {t("reader.speed", { speed: wpm })}
+              </Text>
+              <Button
+                secondary
+                label="+ 25"
+                onPress={() => {
+                  pauseReading();
+                  setWpm(Math.min(MAX_WPM, wpm + 25));
+                }}
+              />
+              <Button
+                secondary
+                label="A−"
+                accessibilityLabel={t("reader.smallerFont")}
+                onPress={() => setFont(Math.max(24, font - 4))}
+              />
+              <Button
+                secondary
+                label="A+"
+                accessibilityLabel={t("reader.largerFont")}
+                onPress={() => setFont(Math.min(64, font + 4))}
+              />
+            </View>
+          }
         >
           <Text style={[s.muted, { color: palette.muted }]}>
             {t("reader.sessionStats", {
@@ -1195,39 +1250,6 @@ function AppContent() {
               minutes: Math.floor(elapsed / 60000),
             })}
           </Text>
-          <View style={s.row}>
-            <Button
-              secondary
-              label="− 25"
-              onPress={() => {
-                pauseReading();
-                setWpm(Math.max(100, wpm - 25));
-              }}
-            />
-            <Text style={[s.body, { color: palette.ink }]}>
-              {t("reader.speed", { speed: wpm })}
-            </Text>
-            <Button
-              secondary
-              label="+ 25"
-              onPress={() => {
-                pauseReading();
-                setWpm(Math.min(MAX_WPM, wpm + 25));
-              }}
-            />
-            <Button
-              secondary
-              label="A−"
-              accessibilityLabel={t("reader.smallerFont")}
-              onPress={() => setFont(Math.max(24, font - 4))}
-            />
-            <Button
-              secondary
-              label="A+"
-              accessibilityLabel={t("reader.largerFont")}
-              onPress={() => setFont(Math.min(64, font + 4))}
-            />
-          </View>
 
           <Text style={[s.muted, { color: palette.muted }]}>
             {!auth ? t("reader.localActivity") : ""}

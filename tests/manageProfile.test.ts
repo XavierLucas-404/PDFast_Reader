@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url),
   { create, act } = require("react-test-renderer");
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-test("profile details are read-only; editing, password expansion, pending email and cancelled drafts stay isolated", async () => {
+test("profile details are read-only; modal editing, password validation, pending email and cancelled drafts stay isolated", async () => {
   const runtime = {
     owner: "a",
     calls: [] as any[],
@@ -29,16 +29,21 @@ test("profile details are read-only; editing, password expansion, pending email 
         name: "mock",
         setup(b) {
           b.onResolve(
-            { filter: /^react-native$|^\.\/backend$|i18n\/react$/ },
+            {
+              filter:
+                /^\.\/AppModal$|^react-native$|^\.\/backend$|i18n\/react$/,
+            },
             (a) => ({ path: a.path, namespace: "mock" }),
           );
           b.onLoad({ filter: /.*/, namespace: "mock" }, (a) => ({
             contents:
-              a.path === "react-native"
-                ? `export const View='View',Text='Text',TextInput='TextInput',TouchableOpacity='TouchableOpacity';export const Keyboard={dismiss(){}};export const StyleSheet={create:o=>o,flatten:s=>Array.isArray(s)?Object.assign({},...s.flat(Infinity).filter(Boolean)):s};export const Platform={select:o=>o.ios};`
-                : a.path === "./backend"
-                  ? `export const backend={auth:{getSession:async()=>{if(runtime.hold)await runtime.hold;return {data:{session:{user:{id:runtime.owner}}}}},updateUser:async(...args)=>{runtime.calls.push({type:'update',args});return {error:null}},resetPasswordForEmail:async(...args)=>{runtime.calls.push({type:'reset',args});return {error:null}}}};export const rpc=async(name,args,owner)=>{runtime.calls.push({type:'rpc',name,args,owner});if(runtime.failName)throw {code:'23505'};};`
-                  : `export const useI18n=()=>{};`,
+              a.path === "./AppModal"
+                ? `import React from 'react';export const modalStyles={};export function AppModal({children,onClose}){return React.createElement('Modal',{onClose},children)}`
+                : a.path === "react-native"
+                  ? `export const View='View',Text='Text',TextInput='TextInput',TouchableOpacity='TouchableOpacity';export const Keyboard={dismiss(){}};export const StyleSheet={create:o=>o,flatten:s=>Array.isArray(s)?Object.assign({},...s.flat(Infinity).filter(Boolean)):s};export const Platform={select:o=>o.ios};`
+                  : a.path === "./backend"
+                    ? `export const backend={auth:{getSession:async()=>{if(runtime.hold)await runtime.hold;return {data:{session:{user:{id:runtime.owner}}}}},updateUser:async(...args)=>{runtime.calls.push({type:'update',args});return {error:null}},resetPasswordForEmail:async(...args)=>{runtime.calls.push({type:'reset',args});return {error:null}}}};export const rpc=async(name,args,owner)=>{runtime.calls.push({type:'rpc',name,args,owner});if(runtime.failName)throw {code:'23505'};};`
+                    : `export const useI18n=()=>{};`,
           }));
         },
       },
@@ -121,55 +126,74 @@ test("profile details are read-only; editing, password expansion, pending email 
     assert.ok(texts().includes("old@example.test"));
     assert.ok(texts().some((v: string) => v.includes("pending@example.test")));
     await press("profile.edit");
-    assert.equal(inputs().length, 2);
+    assert.equal(inputs().length, 0);
+    await press("auth.username");
     assert.equal(field("auth.username").props.value, "lucas");
-    assert.equal(field("profile.newEmail").props.value, "pending@example.test");
     assert.equal(
-      button("profile.passwordToggle").props.accessibilityState.expanded,
-      false,
+      field("auth.username").props.placeholder,
+      t("profile.usernameRule"),
     );
     await enter("auth.username", "draft");
-    await press("profile.back");
+    await press("common.cancel");
     assert.equal(inputs().length, 0);
-    await press("profile.edit");
+    await press("auth.username");
     assert.equal(field("auth.username").props.value, "lucas");
-    await press("profile.passwordToggle");
-    assert.equal(inputs().length, 4);
+    await act(async () => tree.root.findByType("Modal").props.onClose());
+    await press("profile.changePassword");
+    assert.equal(inputs().length, 2);
+    assert.equal(field("profile.newPassword").props.secureTextEntry, true);
+    assert.equal(
+      field("profile.newPassword").props.placeholder,
+      t("profile.passwordRule"),
+    );
     await enter("profile.newPassword", "short");
     await enter("profile.confirmPassword", "short");
-    await press("profile.savePassword");
+    await press("common.save");
     assert.equal(runtime.calls.length, 0);
     assert.ok(texts().some((v: string) => v.includes("8")));
-    await press("profile.passwordToggle");
-    assert.equal(inputs().length, 2);
-    await press("profile.passwordToggle");
+    await press("common.cancel");
+    await press("profile.changePassword");
     assert.equal(field("profile.newPassword").props.value, "");
-    assert.equal(field("profile.confirmPassword").props.value, "");
     await enter("profile.newPassword", "valid-password");
+    await enter("profile.confirmPassword", "different-password");
+    await press("common.save");
+    assert.equal(runtime.calls.length, 0);
     await enter("profile.confirmPassword", "valid-password");
-    await press("profile.savePassword");
+    await press("common.save");
     assert.equal(runtime.calls.at(-1).args[0].password, "valid-password");
-    assert.equal(field("profile.newPassword").props.value, "");
+    assert.equal(inputs().length, 0);
     assert.ok(texts().includes(t("profile.passwordSaved")));
+    await press("profile.changePassword");
+    assert.equal(
+      button("profile.resetPasswordEmail").props.accessibilityRole,
+      "link",
+    );
     await press("profile.resetPasswordEmail");
     assert.equal(runtime.calls.at(-1).type, "reset");
-    await enter("profile.newEmail", "new@example.test");
     await press("profile.changeEmail");
+    assert.equal(field("profile.newEmail").props.value, "");
+    assert.equal(field("profile.newEmail").props.keyboardType, "email-address");
+    await enter("profile.newEmail", "old@example.test");
+    const emailCalls = runtime.calls.length;
+    await press("common.save");
+    assert.equal(runtime.calls.length, emailCalls);
+    await enter("profile.newEmail", "new@example.test");
+    await press("common.save");
     assert.deepEqual(runtime.calls.at(-1).args[0], {
       email: "new@example.test",
     });
     assert.ok(texts().includes("old@example.test"));
     assert.ok(texts().includes(t("profile.emailRequested")));
+    await press("auth.username");
     runtime.failName = true;
-    await press("auth.saveUsername");
+    await press("common.save");
     assert.equal(refreshes, 0);
+    assert.equal(inputs().length, 1);
     assert.ok(
-      tree.root
-        .findAll(
-          (n: any) =>
-            n.type === "Text" && n.props.accessibilityLiveRegion === "polite",
-        )
-        .some((n: any) => n.children.join("").length),
+      tree.root.findAll(
+        (n: any) =>
+          n.type === "Text" && n.props.accessibilityLiveRegion === "polite",
+      ).length,
     );
     runtime.failName = false;
     await enter("auth.username", " NOVO_NOME ");
@@ -177,8 +201,12 @@ test("profile details are read-only; editing, password expansion, pending email 
     runtime.hold = new Promise((resolve) => {
       release = resolve;
     });
-    await press("auth.saveUsername");
-    await press("auth.saveUsername");
+    await press("common.save");
+    await press("common.save");
+    await press("common.cancel");
+    await act(async () => tree.root.findByType("Modal").props.onClose());
+    assert.equal(inputs().length, 1);
+    assert.equal(button("common.cancel").props.disabled, true);
     const before = runtime.calls.length;
     await act(async () => {
       release();
@@ -188,6 +216,7 @@ test("profile details are read-only; editing, password expansion, pending email 
     assert.equal(runtime.calls.length, before + 1);
     assert.equal(refreshes, 1);
     assert.equal(runtime.calls.at(-1).args.p_username, "novo_nome");
+    assert.equal(inputs().length, 0);
     const labels = tree.root.findAllByType("TouchableOpacity").map((n: any) =>
       n
         .findAllByType("Text")
@@ -204,10 +233,11 @@ test("profile details are read-only; editing, password expansion, pending email 
     assert.equal(deletions, 1);
     await press("profile.back");
     await press("profile.edit");
+    await press("auth.username");
     assert.equal(field("auth.username").props.value, "lucas");
     runtime.owner = "b";
     const count = runtime.calls.length;
-    await press("auth.saveUsername");
+    await press("common.save");
     assert.equal(runtime.calls.length, count);
     props = {
       ...props,
@@ -217,8 +247,12 @@ test("profile details are read-only; editing, password expansion, pending email 
     await act(async () => tree.update(render()));
     assert.equal(inputs().length, 0);
     await press("profile.edit");
+    await press("auth.username");
     assert.equal(field("auth.username").props.value, "outra");
+    await press("common.cancel");
+    await press("profile.changeEmail");
     assert.equal(field("profile.newEmail").props.value, "");
+    await press("common.cancel");
     await press("profile.back");
     await press("profile.back");
     assert.equal(backs, 1);

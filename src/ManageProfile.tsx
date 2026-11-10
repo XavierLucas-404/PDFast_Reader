@@ -1,3 +1,4 @@
+import { AppModal, modalStyles } from "./AppModal";
 import { EditProfileIcon } from "./EditProfileIcon";
 import { Text, TextInput } from "./Typography";
 import { m, renderMessage, type MessageValue } from "./i18n";
@@ -131,7 +132,27 @@ function EditProfileForm({
   const [email, setEmail] = useState(user.new_email || "");
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  type Field = "username" | "email" | "password";
+  const [active, setActive] = useState<Field | null>(null);
+  function clearDrafts() {
+    setUsername(initialName || "");
+    setEmail("");
+    setPassword("");
+    setRepeat("");
+    setError("");
+  }
+  function closeEditor() {
+    if (lock.current || externalBusy) return;
+    Keyboard.dismiss();
+    setActive(null);
+    clearDrafts();
+  }
+  function openEditor(field: Field) {
+    if (lock.current || externalBusy) return;
+    clearDrafts();
+    setNotice("");
+    setActive(field);
+  }
   const alive = useRef(true);
   useEffect(() => {
     alive.current = true;
@@ -144,7 +165,7 @@ function EditProfileForm({
   const [notice, setNotice] = useState<MessageValue>("");
   const [error, setError] = useState<MessageValue>("");
   async function execute(fn: () => Promise<MessageValue>) {
-    if (lock.current) return;
+    if (lock.current || externalBusy) return;
     lock.current = true;
     setBusy(true);
     setNotice("");
@@ -155,7 +176,12 @@ function EditProfileForm({
       if (data.session?.user.id !== user.id)
         throw new AppError("errors.accountChangedManage");
       const result = await fn();
-      if (alive.current) setNotice(result);
+      if (alive.current) {
+        Keyboard.dismiss();
+        setActive(null);
+        clearDrafts();
+        setNotice(result);
+      }
     } catch (e) {
       if (alive.current) setError(errorMessage(e));
     } finally {
@@ -175,6 +201,50 @@ function EditProfileForm({
       </Text>
     </TouchableOpacity>
   );
+  const row = (field: Field, label: string, value: string) => (
+    <View style={s.editRow}>
+      <View style={{ flex: 1, gap: 4 }}>
+        {field !== "password" && <Text style={s.muted}>{label}</Text>}
+        <Text style={s.body}>{value}</Text>
+      </View>
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        disabled={busy || externalBusy}
+        onPress={() => openEditor(field)}
+        style={s.back}
+      >
+        <EditProfileIcon />
+      </TouchableOpacity>
+    </View>
+  );
+  const save = () =>
+    void execute(async () => {
+      if (active === "username") {
+        await rpc(
+          "set_username",
+          { p_username: username.trim().toLowerCase() },
+          user.id,
+        );
+        if (alive.current) await onProfile();
+        return m("profile.usernameSaved");
+      }
+      if (active === "email") {
+        const next = credentials(email);
+        if (next === user.email?.toLowerCase())
+          throw new AppError("errors.differentEmail");
+        const { error } = await backend!.auth.updateUser(
+          { email: next },
+          { emailRedirectTo: AUTH_REDIRECT },
+        );
+        if (error) throw error;
+        return m("profile.emailRequested");
+      }
+      validateProfilePassword(password, repeat);
+      const { error } = await backend!.auth.updateUser({ password });
+      if (error) throw error;
+      return m("profile.passwordSaved");
+    });
   return (
     <View style={s.container}>
       <ProfileHeader
@@ -188,148 +258,143 @@ function EditProfileForm({
           {renderMessage(notice)}
         </Text>
       )}
-      {!!error && (
-        <Text accessibilityLiveRegion="polite" style={s.error}>
-          {renderMessage(error)}
-        </Text>
-      )}
-      {initialName !== null && (
-        <>
-          <Text style={s.label}>{t("auth.username")}</Text>
-          <TextInput
-            accessibilityLabel={t("auth.username")}
-            style={s.input}
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={!busy && !externalBusy}
-            maxLength={24}
-          />
-          <Text style={s.muted}>{t("profile.usernameRule")}</Text>
-          {button(
-            t("auth.saveUsername"),
-            () =>
-              void execute(async () => {
-                await rpc(
-                  "set_username",
-                  { p_username: username.trim().toLowerCase() },
-                  user.id,
-                );
-                if (alive.current) await onProfile();
-                return m("profile.usernameSaved");
-              }),
-          )}
-        </>
-      )}
-      <Text style={s.label}>{t("profile.currentEmail")}</Text>
-      <Text style={s.body}>{user.email}</Text>
+      {initialName !== null &&
+        row("username", t("auth.username"), `@${initialName}`)}
+      {row("email", t("profile.changeEmail"), user.email || "")}
       {!!user.new_email && (
         <Text style={s.muted}>
           {t("profile.pendingEmail", { email: user.new_email })}
         </Text>
       )}
-      <Text style={s.label}>{t("profile.newEmail")}</Text>
-      <TextInput
-        accessibilityLabel={t("profile.newEmail")}
-        style={s.input}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-        editable={!busy && !externalBusy}
-      />
-      {button(
-        t("profile.changeEmail"),
-        () =>
-          void execute(async () => {
-            const next = credentials(email);
-            if (next === user.email?.toLowerCase())
-              throw new AppError("errors.differentEmail");
-            const { error } = await backend!.auth.updateUser(
-              { email: next },
-              { emailRedirectTo: AUTH_REDIRECT },
-            );
-            if (error) throw error;
-            return m("profile.emailRequested");
-          }),
-      )}
-      <TouchableOpacity
-        accessibilityRole="button"
-        accessibilityLabel={t("profile.passwordToggle")}
-        accessibilityState={{ expanded: showPassword }}
-        disabled={busy || externalBusy}
-        onPress={() => {
-          setShowPassword(!showPassword);
-          setPassword("");
-          setRepeat("");
-          Keyboard.dismiss();
-        }}
-        style={[s.button, s.secondary]}
-      >
-        <Text style={[s.buttonText, { color: colors.ink }]}>
-          {t("profile.passwordToggle")}
-        </Text>
-      </TouchableOpacity>
-      {showPassword && (
-        <>
-          <Text style={s.label}>{t("profile.newPassword")}</Text>
-          <TextInput
-            accessibilityLabel={t("profile.newPassword")}
-            style={s.input}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            textContentType="newPassword"
-            autoCapitalize="none"
-            editable={!busy && !externalBusy}
-          />
-          <Text style={s.label}>{t("profile.confirmPassword")}</Text>
-          <TextInput
-            accessibilityLabel={t("profile.confirmPassword")}
-            style={s.input}
-            value={repeat}
-            onChangeText={setRepeat}
-            secureTextEntry
-            textContentType="newPassword"
-            autoCapitalize="none"
-            editable={!busy && !externalBusy}
-          />
-          {button(
-            t("profile.savePassword"),
-            () =>
-              void execute(async () => {
-                validateProfilePassword(password, repeat);
-                const { error } = await backend!.auth.updateUser({ password });
-                if (error) throw error;
-                setPassword("");
-                setRepeat("");
-                return m("profile.passwordSaved");
-              }),
-          )}
-          {button(
-            t("profile.resetPasswordEmail"),
-            () =>
-              void execute(async () => {
-                const { error } = await backend!.auth.resetPasswordForEmail(
-                  user.email!,
-                  { redirectTo: RECOVERY_REDIRECT },
-                );
-                if (error) throw error;
-                return m("profile.resetSent");
-              }),
-            true,
-          )}
-        </>
+      {row(
+        "password",
+        t("profile.changePassword"),
+        t("profile.changePassword"),
       )}
       {button(t("common.signOut"), onSignOut, true)}
       {button(t("profile.deleteAccount"), onDelete, true)}
+      {active && (
+        <AppModal onClose={closeEditor}>
+          <Text style={modalStyles.title}>
+            {t(
+              active === "username"
+                ? "auth.username"
+                : active === "email"
+                  ? "profile.changeEmail"
+                  : "profile.changePassword",
+            )}
+          </Text>
+          {!!error && (
+            <Text accessibilityLiveRegion="polite" style={s.error}>
+              {renderMessage(error)}
+            </Text>
+          )}
+          {active === "username" && (
+            <TextInput
+              accessibilityLabel={t("auth.username")}
+              placeholder={t("profile.usernameRule")}
+              style={s.input}
+              value={username}
+              onChangeText={setUsername}
+              autoFocus
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!busy && !externalBusy}
+              maxLength={24}
+            />
+          )}
+          {active === "email" && (
+            <TextInput
+              accessibilityLabel={t("profile.newEmail")}
+              placeholder={t("profile.newEmail")}
+              style={s.input}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoFocus
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!busy && !externalBusy}
+            />
+          )}
+          {active === "password" && (
+            <>
+              <TextInput
+                accessibilityLabel={t("profile.newPassword")}
+                placeholder={t("profile.passwordRule")}
+                style={s.input}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                textContentType="newPassword"
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!busy && !externalBusy}
+              />
+              <TextInput
+                accessibilityLabel={t("profile.confirmPassword")}
+                placeholder={t("profile.confirmPassword")}
+                style={s.input}
+                value={repeat}
+                onChangeText={setRepeat}
+                secureTextEntry
+                textContentType="newPassword"
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!busy && !externalBusy}
+              />
+            </>
+          )}
+          <View style={s.actions}>
+            <View style={{ flex: 1 }}>{button(t("common.save"), save)}</View>
+            <View style={{ flex: 1 }}>
+              {button(t("common.cancel"), closeEditor, true)}
+            </View>
+          </View>
+          {active === "password" && (
+            <TouchableOpacity
+              accessibilityRole="link"
+              disabled={busy || externalBusy}
+              style={s.resetLink}
+              onPress={() =>
+                void execute(async () => {
+                  const { error } = await backend!.auth.resetPasswordForEmail(
+                    user.email!,
+                    { redirectTo: RECOVERY_REDIRECT },
+                  );
+                  if (error) throw error;
+                  return m("profile.resetSent");
+                })
+              }
+            >
+              <Text style={s.linkText}>{t("profile.resetPasswordEmail")}</Text>
+            </TouchableOpacity>
+          )}
+        </AppModal>
+      )}
     </View>
   );
 }
+
 const s = StyleSheet.create({
   container: { gap: 12 },
+  editRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    paddingVertical: 12,
+  },
+  actions: { flexDirection: "row", gap: 12 },
+  resetLink: { minHeight: 44, justifyContent: "center" },
+  linkText: {
+    color: colors.wine,
+    fontSize: 16,
+    textDecorationLine: "underline",
+  },
   header: { flexDirection: "row", alignItems: "center", gap: 8 },
   back: {
     minHeight: 44,

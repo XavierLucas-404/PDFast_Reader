@@ -531,8 +531,8 @@
       "en": "Go to page"
     },
     "chooseSentence": {
-      "pt": "Escolha a frase inicial",
-      "en": "Choose a starting sentence"
+      "pt": "Retomar leitura",
+      "en": "Resume reading"
     },
     "sentenceHint": {
       "pt": "Página {page} · o texto anterior não fará parte do progresso desta leitura.",
@@ -763,8 +763,8 @@
       "en": "Delete account?"
     },
     "deleteBody": {
-      "pt": "Perfil, amizades, pontuação e recompensas serão apagados. PDFs locais permanecem disponíveis.",
-      "en": "Your profile, friendships, scores, and rewards will be deleted. Local PDF files will remain on the device."
+      "pt": "Seu perfil e dados sincronizados serão excluídos. A biblioteca local desta conta será removida; bibliotecas de outras contas e do visitante serão preservadas.",
+      "en": "Your profile and synced data will be deleted. This account’s local library will be removed; other accounts’ and guest libraries will be preserved."
     },
     "comprehension": {
       "pt": "Apresentação de palavras não comprova compreensão.",
@@ -863,6 +863,10 @@
     "backManage": {
       "pt": "Voltar a Gerenciar perfil",
       "en": "Back to Manage profile"
+    },
+    "passwordRule": {
+      "pt": "Mínimo de 8 caracteres",
+      "en": "At least 8 characters"
     }
   },
   "friends": {
